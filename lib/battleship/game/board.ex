@@ -41,7 +41,14 @@ defmodule Battleship.Game.Board do
   def set_ship(_player_id, %Ship{y: y}) when y > (@size - 1) or y < 0, do: {:error, "Invalid position"}
   def set_ship(_player_id, %Ship{orientation: orientation}) when not orientation in @orientations, do: {:error, "Invalid orientation"}
   def set_ship(player_id, ship) do
-    
+    board = Agent.get(ref(player_id), &(&1))
+
+    cond do
+      length(board.ships) == length(@ships_sizes) ->
+        {:error, "All ships are placed"}
+      true ->
+        Agent.update(ref(player_id), &(%{&1 | ships: [ship | &1.ships]}))
+    end
   end
 
   defp ref(player_id), do: {:global, {:board, player_id}}
