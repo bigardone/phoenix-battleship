@@ -1,4 +1,7 @@
 defmodule Battleship.PlayerSocket do
+  @moduledoc """
+  Player socket
+  """
   use Phoenix.Socket
 
   alias Battleship.Player
@@ -21,8 +24,8 @@ defmodule Battleship.PlayerSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(%{"id" => id, "name" => name}, socket) do
-    {:ok, assign(socket, :player, %Player{id: id, name: name})}
+  def connect(%{"id" => player_id, "name" => name}, socket) do
+    {:ok, assign(socket, :player, %Player{id: player_id, name: name})}
   end
   def connect(_, _socket), do: :error
 

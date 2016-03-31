@@ -15,9 +15,10 @@ defmodule Battleship.Game.Supervisor do
     supervise(children, strategy: :simple_one_for_one)
   end
 
-  def create_game(id) do
-    Supervisor.start_child(__MODULE__, [id])
-  end
+  @doc """
+  Creates a new supervised Game process
+  """
+  def create_game(id), do: Supervisor.start_child(__MODULE__, [id])
 
   @doc """
   Generates unique id for the game

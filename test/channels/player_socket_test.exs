@@ -1,13 +1,13 @@
 defmodule Battleship.PlayerSocketTest do
-  use Battleship.ChannelCase
+  use Battleship.ChannelCase, async: true
 
-  alias Battleship.Player
+  alias Battleship.{PlayerSocket, Player}
 
   @id "test-id"
   @name "John"
 
   setup do
-    {:ok, socket} = connect(Battleship.PlayerSocket, %{"id" => @id, "name" => @name})
+    {:ok, socket} = connect(PlayerSocket, %{"id" => @id, "name" => @name})
 
     {:ok, socket: socket}
   end

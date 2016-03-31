@@ -1,6 +1,6 @@
 defmodule Battleship.GameTest do
   @moduledoc false
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   alias Battleship.Game.Supervisor, as: GameSupervisor
   alias Battleship.{Game, Player}
 
@@ -12,7 +12,7 @@ defmodule Battleship.GameTest do
     {:ok, pid: pid}
   end
 
-  test "joining a game which does not exist", %{pid: pid} do
+  test "joining a game which does not exist" do
     assert {:error, "Game does not exist"} = Game.join("wrong-id", %Player{id: 1}, self)
   end
 
