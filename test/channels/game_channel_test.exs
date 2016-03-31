@@ -2,7 +2,7 @@ defmodule Battleship.GameChannelTest do
   @moduledoc false
   use Battleship.ChannelCase, async: true
   alias Battleship.Game.Supervisor, as: GameSupervisor
-  alias Battleship.{PlayerSocket, GameChannel}
+  alias Battleship.{PlayerSocket, GameChannel, Player, Game}
 
   @player_id "player-1"
   @player_name "John"
@@ -31,5 +31,7 @@ defmodule Battleship.GameChannelTest do
     assert_reply ref, :ok
 
     assert_receive {:DOWN, ^game_ref, :process, ^game, _}
+
+    assert {:error, "Game does not exist"} = Game.join(game_id, %Player{id: @player_id, name: @player_name}, socket.channel_pid)
   end
 end
