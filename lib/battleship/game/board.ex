@@ -12,7 +12,7 @@ defmodule Battleship.Game.Board do
   defstruct [
     player_id: nil,
     ships: [],
-    shots: []
+    ships_grid: []
   ]
 
   @doc """
@@ -21,7 +21,10 @@ defmodule Battleship.Game.Board do
   def create(player_id) do
     Logger.debug "Starting board for player #{player_id}"
 
-    Agent.start(fn -> %__MODULE__{player_id: player_id} end, name: ref(player_id))
+    ships_grid = 0..@size - 1
+    |> Enum.map(fn(_) -> build_grid_row end)
+
+    Agent.start(fn -> %__MODULE__{player_id: player_id, ships_grid: ships_grid} end, name: ref(player_id))
   end
 
   @doc """
@@ -50,6 +53,8 @@ defmodule Battleship.Game.Board do
         {:error, "All ships are placed"}
       ship_already_placed?(board, ship) ->
         {:error, "Ship already added"}
+      ship_with_invalid_coordinates?(ship) ->
+        {:error, "Ship has invalid coordinates"}
       true ->
         Agent.update(ref(player_id), &(%{&1 | ships: [ship | &1.ships]}))
 
@@ -65,5 +70,18 @@ defmodule Battleship.Game.Board do
   defp ship_already_placed?(%__MODULE__{ships: ships}, %Ship{size: size}) do
     permited_amount = Enum.count(@ships_sizes, &(&1 == size))
     Enum.count(ships, &(&1.size == size)) == permited_amount
+  end
+
+  defp ship_with_invalid_coordinates?(%Ship{orientation: orientation} = ship) when orientation == :horizontal do
+    ship.x + ship.size > @size
+  end
+
+  defp ship_with_invalid_coordinates?(%Ship{orientation: orientation} = ship) when orientation == :vertical do
+    ship.y + ship.size > @size
+  end
+
+  defp build_grid_row do
+    0..@size - 1
+    |> Enum.map(fn(_) -> :water end)
   end
 end

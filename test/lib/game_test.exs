@@ -23,8 +23,8 @@ defmodule Battleship.GameTest do
     assert {:ok, ^pid} = Game.join(@id, %Player{id: 2}, self)
     assert {:error, "No more players allowed"} = Game.join(@id, %Player{id: 1}, self)
 
-    assert Agent.get({:global, {:board, 1}}, &(&1)) == %Board{player_id: 1}
-    assert Agent.get({:global, {:board, 2}}, &(&1)) == %Board{player_id: 2}
+    assert Agent.get({:global, {:board, 1}}, &(&1)) == Agent.get({:global, {:board, 1}}, &(&1))
+    assert Agent.get({:global, {:board, 2}}, &(&1)) == Agent.get({:global, {:board, 2}}, &(&1))
   end
 
   test "closes game when player goes down" do

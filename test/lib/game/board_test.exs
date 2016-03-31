@@ -29,6 +29,9 @@ defmodule Battleship.Game.BoardTest do
     valid_ship = %Ship{x: 0, y: 0, size: 5, orientation: :vertical}
     Board.add_ship(@player_id, valid_ship)
     assert {:error, "Ship already added"} = Board.add_ship(@player_id, valid_ship)
+
+    invalid_coordinates_ship = %Ship{x: 0, y: 8, size: 3, orientation: :vertical}
+    assert {:error, "Ship has invalid coordinates"} = Board.add_ship(@player_id, invalid_coordinates_ship)
   end
 
   test "addding valid ships" do
@@ -38,7 +41,7 @@ defmodule Battleship.Game.BoardTest do
     ship = %Ship{x: 0, y: 0, size: 3, orientation: :vertical}
     assert {:ok, ^ship} = Board.add_ship(@player_id, ship)
 
-    ship = %Ship{x: 0, y: 0, size: 3, orientation: :vertical}
+    ship = %Ship{x: 0, y: 7, size: 3, orientation: :vertical}
     assert {:ok, ^ship} = Board.add_ship(@player_id, ship)
   end
 end
