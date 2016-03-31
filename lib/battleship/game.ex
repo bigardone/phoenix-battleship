@@ -4,6 +4,7 @@ defmodule Battleship.Game do
   """
   use GenServer
   alias Battleship.Player
+  alias Battleship.Game.Board
 
   defstruct [
     id: nil,
@@ -39,6 +40,7 @@ defmodule Battleship.Game do
         {:reply, {:error, "Player already joined"}, game}
       true ->
         Process.monitor(pid)
+        create_board(player)
         game = %{game | players: [player | game.players], channels: [pid | game.channels]}
 
         {:reply, {:ok, self}, game}
@@ -46,8 +48,15 @@ defmodule Battleship.Game do
   end
 
   def handle_info({:DOWN, _ref, :process, _pid, _reason}, game) do
+    for player <- game.players, do: Board.destroy(player.id)
+
     {:stop, :normal, game}
   end
+
+  @doc """
+  Creates a new Board for a given Player
+  """
+  defp create_board(%Player{id: id}), do: Board.create(id)
 
   @doc """
   Generates global reference
