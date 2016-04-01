@@ -4,7 +4,7 @@ defmodule Battleship.GameChannelTest do
   alias Battleship.Game.Supervisor, as: GameSupervisor
   alias Battleship.{PlayerSocket, GameChannel, Player, Game}
 
-  @player_id "player-1"
+  @player_id 4 |> :crypto.strong_rand_bytes |> Base.encode64()
   @player_name "John"
 
   setup do

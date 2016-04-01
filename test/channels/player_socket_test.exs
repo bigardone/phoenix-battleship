@@ -3,7 +3,7 @@ defmodule Battleship.PlayerSocketTest do
 
   alias Battleship.{PlayerSocket, Player}
 
-  @id "test-id"
+  @id 4 |> :crypto.strong_rand_bytes |> Base.encode64()
   @name "John"
 
   setup do
