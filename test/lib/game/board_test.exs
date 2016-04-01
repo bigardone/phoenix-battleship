@@ -9,11 +9,19 @@ defmodule Battleship.Game.BoardTest do
   setup do
     {:ok, board} = Board.create(@player_id)
 
+    valid_ships = [
+      %Ship{x: 0, y: 0, size: 5, orientation: :vertical},
+      %Ship{x: 1, y: 0, size: 4, orientation: :vertical},
+      %Ship{x: 2, y: 0, size: 3, orientation: :vertical},
+      %Ship{x: 3, y: 0, size: 3, orientation: :vertical},
+      %Ship{x: 4, y: 0, size: 2, orientation: :vertical}
+    ]
+
     on_exit fn ->
       Board.destroy(@player_id)
     end
 
-    {:ok, board: board}
+    {:ok, board: board, valid_ships: valid_ships}
   end
 
   test "adding invalid ships" do
@@ -37,14 +45,10 @@ defmodule Battleship.Game.BoardTest do
     assert {:error, "Ship has invalid coordinates"} = Board.add_ship(@player_id, overlaping_ship)
   end
 
-  test "addding valid ships" do
-    ship = %Ship{x: 0, y: 0, size: 5, orientation: :vertical}
-    assert {:ok, ^ship} = Board.add_ship(@player_id, ship)
+  test "addding valid ships", %{valid_ships: valid_ships} do
+    valid_ships
+    |> Enum.each(fn ship -> assert {:ok, %Board{}} = Board.add_ship(@player_id, ship) end)
 
-    ship = %Ship{x: 2, y: 2, size: 3, orientation: :horizontal}
-    assert {:ok, ^ship} = Board.add_ship(@player_id, ship)
-
-    ship = %Ship{x: 1, y: 7, size: 3, orientation: :vertical}
-    assert {:ok, ^ship} = Board.add_ship(@player_id, ship)
+    assert %Board{ready: true} = Board.get_data(@player_id)
   end
 end

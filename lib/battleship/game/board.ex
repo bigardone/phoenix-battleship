@@ -18,7 +18,8 @@ defmodule Battleship.Game.Board do
   defstruct [
     player_id: nil,
     ships: [],
-    ships_grid: %{}
+    ships_grid: %{},
+    ready: false
   ]
 
   @doc """
@@ -54,7 +55,7 @@ defmodule Battleship.Game.Board do
     board = Agent.get(ref(player_id), &(&1))
 
     cond do
-      length(board.ships) == length(@ships_sizes) ->
+      board.ready ->
         {:error, "All ships are placed"}
       ship_already_placed?(board, ship) ->
         {:error, "Ship already added"}
@@ -62,11 +63,19 @@ defmodule Battleship.Game.Board do
         {:error, "Ship has invalid coordinates"}
       true ->
         ships_grid = add_ship_to_grid(board.ships_grid, ship)
-        new_board = %{board | ships: [ship | board.ships], ships_grid: ships_grid}
+        ships = [ship | board.ships]
+        ready = length(ships) == length(@ships_sizes)
+        new_board = %{board | ships: [ship | board.ships], ships_grid: ships_grid, ready: ready}
         Agent.update(ref(player_id), fn(_) -> new_board end)
 
-        {:ok, ship}
+        {:ok, new_board}
     end
+  end
+
+  def get_data(player_id) do
+    Logger.debug "Getting board state for player #{player_id}"
+
+    Agent.get(ref(player_id), &(&1))
   end
 
   defp ref(player_id), do: {:global, {:board, player_id}}
