@@ -8,17 +8,16 @@ defmodule Battleship.Game.Board do
   @ships_sizes [5, 4, 3, 3, 2]
   @size 10
   @orientations [:horizontal, :vertical]
-  @grid_values %{
-    water: "·",
-    ship: "/",
-    water_hit: "O",
-    ship_hit: "*"
-  }
+
+  @grid_value_watter "·"
+  @grid_value_ship "/"
+  @grid_value_watter_hit "O"
+  @grid_value_ship_hit "*"
 
   defstruct [
     player_id: nil,
     ships: [],
-    ships_grid: %{},
+    grid: %{},
     ready: false
   ]
 
@@ -28,9 +27,9 @@ defmodule Battleship.Game.Board do
   def create(player_id) do
     Logger.debug "Starting board for player #{player_id}"
 
-    ships_grid = build_grid
+    grid = build_grid
 
-    Agent.start(fn -> %__MODULE__{player_id: player_id, ships_grid: ships_grid} end, name: ref(player_id))
+    Agent.start(fn -> %__MODULE__{player_id: player_id, grid: grid} end, name: ref(player_id))
   end
 
   @doc """
@@ -62,69 +61,93 @@ defmodule Battleship.Game.Board do
       ship_with_invalid_bounds?(ship) || ship_with_invalid_coordinates?(board, ship) ->
         {:error, "Ship has invalid coordinates"}
       true ->
-        ships_grid = add_ship_to_grid(board.ships_grid, ship)
+        grid = add_ship_to_grid(board.grid, ship)
         ships = [ship | board.ships]
         ready = length(ships) == length(@ships_sizes)
-        new_board = %{board | ships: [ship | board.ships], ships_grid: ships_grid, ready: ready}
+        new_board = %{board | ships: [ship | board.ships], grid: grid, ready: ready}
         Agent.update(ref(player_id), fn(_) -> new_board end)
 
         {:ok, new_board}
     end
   end
 
+  @doc """
+  Returns the board
+  """
   def get_data(player_id) do
     Logger.debug "Getting board state for player #{player_id}"
 
     Agent.get(ref(player_id), &(&1))
   end
 
+  @doc """
+  Takes a hit, checks the result and returns the board updated
+  """
+  def take_shot(player_id, x: x, y: y) do
+    coords = Enum.join([y, x], "")
+
+    player_id
+    |> get_data
+    |> Map.get(:grid)
+    |> Map.get(coords)
+    |> shot_result
+    |> add_result_to_board(player_id, coords)
+  end
+
   defp ref(player_id), do: {:global, {:board, player_id}}
 
-  @doc """
-  Checks if a similar ship has been already placed
-  """
+  # Checks if a similar ship has been already placed
   defp ship_already_placed?(%__MODULE__{ships: ships}, %Ship{size: size}) do
     permited_amount = Enum.count(@ships_sizes, &(&1 == size))
     Enum.count(ships, &(&1.size == size)) == permited_amount
   end
 
+  # Checks if the ship is inside the boards boundaries
   defp ship_with_invalid_bounds?(%Ship{orientation: orientation} = ship) when orientation == :horizontal do
     ship.x + ship.size > @size
   end
-
   defp ship_with_invalid_bounds?(%Ship{orientation: orientation} = ship) when orientation == :vertical do
     ship.y + ship.size > @size
   end
 
+  # Checks is the ship is collapsing an exisiting one
   defp ship_with_invalid_coordinates?(board, ship) do
     ship
     |> Ship.coordinates
-    |> Enum.map(&(board.ships_grid[&1] == @grid_values.ship))
+    |> Enum.map(&(board.grid[&1] == @grid_value_ship))
     |> Enum.any?(&(&1 == true))
   end
 
+  # Adds a ship to the grid
   defp add_ship_to_grid(grid, ship) do
     ship_values = ship
       |> Ship.coordinates
-      |> Enum.reduce(%{}, fn(coord, acc) -> Map.put(acc, coord, @grid_values.ship) end)
+      |> Enum.reduce(%{}, fn(coord, acc) -> Map.put(acc, coord, @grid_value_ship) end)
 
     Map.merge grid, ship_values
   end
 
-  def build_grid do
-    list = Enum.reduce 0..@size - 1, [], fn y, rows ->
-      row = 0..@size - 1
-        |> Enum.reduce(rows, fn x, col ->
-          [Enum.join([y, x], "") | col]
-        end)
-
-      [row | rows]
-    end
-
-    list
+  # Builds a default grid map
+  defp build_grid do
+    0..@size - 1
+    |> Enum.reduce([], &build_rows/2)
     |> List.flatten
-    |> Enum.reduce(%{}, fn item, acc ->
-      Map.put(acc, item, "·")
-    end)
+    |> Enum.reduce(%{}, fn item, acc -> Map.put(acc, item, "·") end)
+  end
+
+  defp build_rows(y, rows) do
+    row = 0..@size - 1
+      |> Enum.reduce(rows, fn x, col -> [Enum.join([y, x], "") | col] end)
+
+    [row | rows]
+  end
+
+  defp shot_result(current_value) when current_value == @grid_value_ship, do: @grid_value_ship_hit
+  defp shot_result(_current_value), do: @grid_value_watter_hit
+
+  defp add_result_to_board(result, player_id, coords) do
+    Agent.update(ref(player_id), &(put_in(&1.grid[coords], result)))
+
+    {:ok, get_data(player_id)}
   end
 end
