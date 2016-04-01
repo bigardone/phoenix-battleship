@@ -8,11 +8,17 @@ defmodule Battleship.Game.Board do
   @ships_sizes [5, 4, 3, 3, 2]
   @size 10
   @orientations [:horizontal, :vertical]
+  @grid_values %{
+    water: "·",
+    ship: "/",
+    water_hit: "O",
+    ship_hit: "*"
+  }
 
   defstruct [
     player_id: nil,
     ships: [],
-    ships_grid: []
+    ships_grid: %{}
   ]
 
   @doc """
@@ -21,8 +27,7 @@ defmodule Battleship.Game.Board do
   def create(player_id) do
     Logger.debug "Starting board for player #{player_id}"
 
-    ships_grid = 0..@size - 1
-    |> Enum.map(fn(_) -> build_grid_row end)
+    ships_grid = build_grid
 
     Agent.start(fn -> %__MODULE__{player_id: player_id, ships_grid: ships_grid} end, name: ref(player_id))
   end
@@ -53,10 +58,12 @@ defmodule Battleship.Game.Board do
         {:error, "All ships are placed"}
       ship_already_placed?(board, ship) ->
         {:error, "Ship already added"}
-      ship_with_invalid_coordinates?(ship) ->
+      ship_with_invalid_bounds?(ship) || ship_with_invalid_coordinates?(board, ship) ->
         {:error, "Ship has invalid coordinates"}
       true ->
-        Agent.update(ref(player_id), &(%{&1 | ships: [ship | &1.ships]}))
+        ships_grid = add_ship_to_grid(board.ships_grid, ship)
+        new_board = %{board | ships: [ship | board.ships], ships_grid: ships_grid}
+        Agent.update(ref(player_id), fn(_) -> new_board end)
 
         {:ok, ship}
     end
@@ -72,16 +79,43 @@ defmodule Battleship.Game.Board do
     Enum.count(ships, &(&1.size == size)) == permited_amount
   end
 
-  defp ship_with_invalid_coordinates?(%Ship{orientation: orientation} = ship) when orientation == :horizontal do
+  defp ship_with_invalid_bounds?(%Ship{orientation: orientation} = ship) when orientation == :horizontal do
     ship.x + ship.size > @size
   end
 
-  defp ship_with_invalid_coordinates?(%Ship{orientation: orientation} = ship) when orientation == :vertical do
+  defp ship_with_invalid_bounds?(%Ship{orientation: orientation} = ship) when orientation == :vertical do
     ship.y + ship.size > @size
   end
 
-  defp build_grid_row do
-    0..@size - 1
-    |> Enum.map(fn(_) -> :water end)
+  defp ship_with_invalid_coordinates?(board, ship) do
+    ship
+    |> Ship.coordinates
+    |> Enum.map(&(board.ships_grid[&1] == @grid_values.ship))
+    |> Enum.any?(&(&1 == true))
+  end
+
+  defp add_ship_to_grid(grid, ship) do
+    ship_values = ship
+      |> Ship.coordinates
+      |> Enum.reduce(%{}, fn(coord, acc) -> Map.put(acc, coord, @grid_values.ship) end)
+
+    Map.merge grid, ship_values
+  end
+
+  def build_grid do
+    list = Enum.reduce 0..@size - 1, [], fn y, rows ->
+      row = 0..@size - 1
+        |> Enum.reduce(rows, fn x, col ->
+          [Enum.join([y, x], "") | col]
+        end)
+
+      [row | rows]
+    end
+
+    list
+    |> List.flatten
+    |> Enum.reduce(%{}, fn item, acc ->
+      Map.put(acc, item, "·")
+    end)
   end
 end

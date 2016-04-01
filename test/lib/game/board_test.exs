@@ -4,7 +4,7 @@ defmodule Battleship.Game.BoardTest do
   alias Battleship.Game.Board
   alias Battleship.Ship
 
-  @player_id "player-1"
+  @player_id 4 |> :crypto.strong_rand_bytes |> Base.encode64()
 
   setup do
     {:ok, board} = Board.create(@player_id)
@@ -32,16 +32,19 @@ defmodule Battleship.Game.BoardTest do
 
     invalid_coordinates_ship = %Ship{x: 0, y: 8, size: 3, orientation: :vertical}
     assert {:error, "Ship has invalid coordinates"} = Board.add_ship(@player_id, invalid_coordinates_ship)
+
+    overlaping_ship = %{valid_ship | size: 4, orientation: :horizontal}
+    assert {:error, "Ship has invalid coordinates"} = Board.add_ship(@player_id, overlaping_ship)
   end
 
   test "addding valid ships" do
     ship = %Ship{x: 0, y: 0, size: 5, orientation: :vertical}
     assert {:ok, ^ship} = Board.add_ship(@player_id, ship)
 
-    ship = %Ship{x: 0, y: 0, size: 3, orientation: :vertical}
+    ship = %Ship{x: 2, y: 2, size: 3, orientation: :horizontal}
     assert {:ok, ^ship} = Board.add_ship(@player_id, ship)
 
-    ship = %Ship{x: 0, y: 7, size: 3, orientation: :vertical}
+    ship = %Ship{x: 1, y: 7, size: 3, orientation: :vertical}
     assert {:ok, ^ship} = Board.add_ship(@player_id, ship)
   end
 end
