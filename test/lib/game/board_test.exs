@@ -49,7 +49,9 @@ defmodule Battleship.Game.BoardTest do
     valid_ships
     |> Enum.each(fn ship -> assert {:ok, %Board{}} = Board.add_ship(@player_id, ship) end)
 
-    assert %Board{ready: true} = Board.get_data(@player_id)
+    hit_points =  Enum.reduce(valid_ships, 0, &(&1.size + &2))
+
+    assert %Board{ready: true, hit_points: hit_points} = Board.get_data(@player_id)
   end
 
   test "taking a shot into watter", %{valid_ships: valid_ships} do

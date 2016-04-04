@@ -11,7 +11,8 @@ defmodule Battleship.Game do
     attacker: nil,
     defender: nil,
     channels: [],
-    rounds: []
+    rounds: [],
+    over: false
   ]
 
   # API

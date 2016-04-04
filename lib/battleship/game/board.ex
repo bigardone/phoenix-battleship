@@ -18,7 +18,8 @@ defmodule Battleship.Game.Board do
     player_id: nil,
     ships: [],
     grid: %{},
-    ready: false
+    ready: false,
+    hit_points: 0
   ]
 
   @doc """
@@ -61,10 +62,11 @@ defmodule Battleship.Game.Board do
       ship_with_invalid_bounds?(ship) || ship_with_invalid_coordinates?(board, ship) ->
         {:error, "Ship has invalid coordinates"}
       true ->
-        grid = add_ship_to_grid(board.grid, ship)
-        ships = [ship | board.ships]
-        ready = length(ships) == length(@ships_sizes)
-        new_board = %{board | ships: [ship | board.ships], grid: grid, ready: ready}
+        new_board = board
+        |> add_ship_to_grid(ship)
+        |> set_is_ready
+        |> set_hit_points
+
         Agent.update(ref(player_id), fn(_) -> new_board end)
 
         {:ok, new_board}
@@ -119,12 +121,14 @@ defmodule Battleship.Game.Board do
   end
 
   # Adds a ship to the grid
-  defp add_ship_to_grid(grid, ship) do
+  defp add_ship_to_grid(board, ship) do
     ship_values = ship
       |> Ship.coordinates
       |> Enum.reduce(%{}, fn(coord, acc) -> Map.put(acc, coord, @grid_value_ship) end)
 
-    Map.merge grid, ship_values
+    grid = Map.merge board.grid, ship_values
+
+    %{board | grid: grid, ships: [ship | board.ships]}
   end
 
   # Builds a default grid map
@@ -150,4 +154,8 @@ defmodule Battleship.Game.Board do
 
     {:ok, get_data(player_id)}
   end
+
+  defp set_is_ready(board), do: %{board | ready: length(board.ships) == length(@ships_sizes)}
+
+  defp set_hit_points(board), do: %{board | hit_points: Enum.reduce(board.ships, 0, &(&1.size + &2))}
 end
