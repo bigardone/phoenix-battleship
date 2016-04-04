@@ -94,6 +94,7 @@ defmodule Battleship.Game.Board do
     |> Map.get(coords)
     |> shot_result
     |> add_result_to_board(player_id, coords)
+    |> update_hit_points
   end
 
   defp ref(player_id), do: {:global, {:board, player_id}}
@@ -152,7 +153,19 @@ defmodule Battleship.Game.Board do
   defp add_result_to_board(result, player_id, coords) do
     Agent.update(ref(player_id), &(put_in(&1.grid[coords], result)))
 
-    {:ok, get_data(player_id)}
+    get_data(player_id)
+  end
+
+  defp update_hit_points(board) do
+    hits = board.grid
+    |> Map.values
+    |> Enum.count(&(&1 == @grid_value_ship_hit))
+
+    hit_points =  Enum.reduce(board.ships, 0, &(&1.size + &2)) - hits
+
+    Agent.update(ref(board.player_id), fn(_) -> %{board | hit_points: hit_points} end)
+
+    {:ok, get_data(board.player_id)}
   end
 
   defp set_is_ready(board), do: %{board | ready: length(board.ships) == length(@ships_sizes)}

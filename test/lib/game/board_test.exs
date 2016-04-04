@@ -65,6 +65,6 @@ defmodule Battleship.Game.BoardTest do
     valid_ships
     |> Enum.each(&Board.add_ship(@player_id, &1))
 
-    assert {:ok, %Board{grid: %{"00" => "*"}}} = Board.take_shot(@player_id, x: 0, y: 0)
+    assert {:ok, %Board{grid: %{"00" => "*"}, hit_points: 16}} = Board.take_shot(@player_id, x: 0, y: 0)
   end
 end
