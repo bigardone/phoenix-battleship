@@ -8,7 +8,8 @@ defmodule Battleship.Game do
 
   defstruct [
     id: nil,
-    players: [],
+    attacker: nil,
+    defender: nil,
     channels: [],
     rounds: []
   ]
@@ -19,36 +20,36 @@ defmodule Battleship.Game do
     GenServer.start_link(__MODULE__, [id], name: ref(id))
   end
 
-  def join(id, %Player{} = player, pid) do
-    case GenServer.whereis(ref(id)) do
-      nil ->
-        {:error, "Game does not exist"}
-      game ->
-        GenServer.call(game, {:join, player, pid})
-    end
-  end
+  def join(id, %Player{} = player, pid), do: try_call(id, {:join, player, pid})
+
+  def get_data(id), do: try_call(id, :get_data)
 
   # SERVER
 
-  def init(id), do: {:ok, %Battleship.Game{id: id}}
+  def init(id), do: {:ok, %__MODULE__{id: id}}
 
   def handle_call({:join, player, pid}, _from, game) do
     cond do
-      length(game.players) == 2 ->
+      game.attacker != nil and game.defender != nil ->
         {:reply, {:error, "No more players allowed"}, game}
-      Enum.member?(game.players, player) ->
+      Enum.member?([game.attacker, game.defender], player) ->
         {:reply, {:error, "Player already joined"}, game}
       true ->
         Process.monitor(pid)
         create_board(player)
-        game = %{game | players: [player | game.players], channels: [pid | game.channels]}
+
+        game = game
+        |> add_player(player)
+        |> add_channel(pid)
 
         {:reply, {:ok, self}, game}
     end
   end
 
+  def handle_call(:get_data, _from, game), do: {:reply, {:ok, game}, game}
+
   def handle_info({:DOWN, _ref, :process, _pid, _reason}, game) do
-    for player <- game.players, do: Board.destroy(player.id)
+    for player <- [game.attacker, game.defender], do: destroy_board(player)
 
     {:stop, :normal, game}
   end
@@ -62,4 +63,21 @@ defmodule Battleship.Game do
   Generates global reference
   """
   defp ref(id), do: {:global, {:game, id}}
+
+  defp add_player(%__MODULE__{attacker: nil} = game, player), do: %{game | attacker: player}
+  defp add_player(%__MODULE__{defender: nil} = game, player), do: %{game | defender: player}
+
+  defp add_channel(game, pid), do: %{game | channels: [pid | game.channels]}
+
+  defp destroy_board(nil), do: :ok
+  defp destroy_board(player), do: Board.destroy(player.id)
+
+  defp try_call(id, message) do
+    case GenServer.whereis(ref(id)) do
+      nil ->
+        {:error, "Game does not exist"}
+      game ->
+        GenServer.call(game, message)
+    end
+  end
 end

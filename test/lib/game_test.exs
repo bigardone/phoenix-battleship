@@ -23,6 +23,10 @@ defmodule Battleship.GameTest do
     assert {:ok, ^pid} = Game.join(@id, %Player{id: 2}, self)
     assert {:error, "No more players allowed"} = Game.join(@id, %Player{id: 1}, self)
 
+    {:ok, game} = Game.get_data(@id)
+    assert %Player{id: 1} = game.attacker
+    assert %Player{id: 2} = game.defender
+
     assert %Board{player_id: 1} = Agent.get({:global, {:board, 1}}, &(&1))
     assert %Board{player_id: 2} = Agent.get({:global, {:board, 2}}, &(&1))
   end
