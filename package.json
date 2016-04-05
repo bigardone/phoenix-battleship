@@ -6,7 +6,7 @@
     "babel-preset-react": "^6.3.13",
     "babel-preset-stage-0": "^6.3.13",
     "babel-preset-stage-2": "^6.3.13",
-    "brunch": "github:brunch/brunch",
+    "brunch": "2.6.0",
     "classnames": "^2.2.3",
     "clean-css-brunch": "^2.0.0",
     "css-brunch": "^2.6.1",
@@ -25,7 +25,7 @@
     "redux": "^3.1.2",
     "redux-logger": "^2.6.1",
     "redux-thunk": "^2.0.1",
-    "stylus-brunch": "^2.6.0",
+    "stylus-brunch": "github:brunch/stylus-brunch",
     "uglify-js-brunch": "^2.0.1"
   }
 }
