@@ -13,6 +13,7 @@
 
   <body>
     <div id="main_container"></div> <!-- /container -->
+    <%= render @view_module, @view_template, assigns %>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>
