@@ -1,5 +1,6 @@
 <script>
   if (!localStorage.getItem('playerId')) {
     localStorage.setItem('playerId','<%= @id %>');
+    localStorage.setItem('playerName','<%= "Player #{@id}" %>');
   }
 </script>

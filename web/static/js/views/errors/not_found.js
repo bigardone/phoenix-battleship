@@ -2,7 +2,11 @@ import React, {PropTypes} from 'react';
 
 export default class NotFoundView extends React.Component {
   render() {
-    return (<div>MyComponent</div>);
+    return (
+      <div>
+        <h1>Arr!</h1>
+      </div>
+    );
   }
 }
 
