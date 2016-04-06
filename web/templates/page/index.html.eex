@@ -1,3 +1,5 @@
 <script>
-  window.playerId = "<%= @id %>";
+  if (!localStorage.getItem('playerId')) {
+    localStorage.setItem('playerId','<%= @id %>');
+  }
 </script>
