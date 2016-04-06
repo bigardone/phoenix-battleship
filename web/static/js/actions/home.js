@@ -1,8 +1,14 @@
+import { push }       from 'react-router-redux';
 import Constants      from '../constants';
 import { setPlayer }  from './session';
 
-export function newGame(player) {
+export function newGame(player, socket, channel) {
   return dispatch => {
-    dispatch(setPlayer(player));
+    dispatch(setPlayer(player, socket, channel));
+
+    channel.push('game:new')
+    .receive('ok', (payload) => {
+      dispatch(push(`/game/${payload.game_id}`));
+    });
   };
 }

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Socket }           from 'phoenix';
 import { connect }          from 'react-redux';
 import { newGame }          from '../../actions/home';
 
@@ -15,7 +16,22 @@ class HomeIndexView extends React.Component {
     player.name = name;
 
     const { dispatch } = this.props;
-    dispatch(newGame(player));
+
+    const socket = new Socket('/socket', {
+      params: {
+        id: player.id,
+        name: player.name,
+      },
+      logger: (kind, msg, data) => { console.log(`${kind}: ${msg}`, data); },
+    });
+
+    socket.connect();
+
+    const channel = socket.channel(`player:${player.id}`);
+    channel.join().receive('ok', () => {
+      dispatch(newGame(player, socket, channel));
+    });
+
   }
 
   render() {
