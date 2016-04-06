@@ -7,5 +7,10 @@ defmodule Battleship.PageController do
     render conn, "index.html", id: player_id()
   end
 
-  defp player_id, do: @id_length |> :crypto.strong_rand_bytes |> Base.encode64()
+  defp player_id do
+    @id_length
+    |> :crypto.strong_rand_bytes
+    |> Base.url_encode64()
+    |> binary_part(0, @id_length)
+  end
 end
