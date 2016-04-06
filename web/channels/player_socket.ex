@@ -8,7 +8,7 @@ defmodule Battleship.PlayerSocket do
 
   ## Channels
   channel "player:*", Battleship.PlayerChannel
-  channel "games:*", Battleship.GameChannel
+  channel "game:*", Battleship.GameChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
