@@ -47,13 +47,13 @@ defmodule Battleship.Game do
     end
   end
 
-  def handle_call(:get_data, _from, game), do: {:reply, {:ok, game}, game}
+  def handle_call(:get_data, _from, game), do: {:reply, %{game | channels: nil}, game}
 
-  def handle_info({:DOWN, _ref, :process, _pid, _reason}, game) do
-    for player <- [game.attacker, game.defender], do: destroy_board(player)
-
-    {:stop, :normal, game}
-  end
+  # def handle_info({:DOWN, _ref, :process, _pid, _reason}, game) do
+  #   for player <- [game.attacker, game.defender], do: destroy_board(player)
+  #
+  #   {:stop, :normal, game}
+  # end
 
   @doc """
   Creates a new Board for a given Player
