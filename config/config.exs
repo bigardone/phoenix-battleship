@@ -21,7 +21,7 @@ config :logger, :console,
 
 config :battleship,
   ga_tracking_code: "",
-  id_length: 64
+  id_length: 8
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
