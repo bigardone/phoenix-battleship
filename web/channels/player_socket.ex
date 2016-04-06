@@ -7,6 +7,7 @@ defmodule Battleship.PlayerSocket do
   alias Battleship.Player
 
   ## Channels
+  channel "player:*", Battleship.PlayerChannel
   channel "games:*", Battleship.GameChannel
 
   ## Transports
