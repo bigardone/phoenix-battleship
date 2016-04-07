@@ -1,3 +1,4 @@
+import { push }   from 'react-router-redux';
 import Constants  from '../constants';
 
 export function joinGame(socket, player, gameId) {
