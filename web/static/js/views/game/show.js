@@ -1,10 +1,10 @@
 import React, { PropTypes }   from 'react';
-import { push }               from 'react-router-redux';
 import { Socket }             from 'phoenix';
 import { connect }            from 'react-redux';
 import { joinGame }           from '../../actions/game';
 import ShipSelector           from '../../components/game/ship_selector';
 import Board                  from '../../components/game/board';
+import Chat                   from '../../components/game/chat';
 
 class GameShowView extends React.Component {
   componentDidMount() {
@@ -19,7 +19,7 @@ class GameShowView extends React.Component {
   }
 
   render() {
-    const { game } = this.props;
+    const { dispatch, game } = this.props;
 
     if (!game) return false;
 
@@ -32,8 +32,7 @@ class GameShowView extends React.Component {
           <ShipSelector />
           <Board data={game.my_board}/>
         </section>
-        <aside id="chat_container">
-        </aside>
+        <Chat dispatch={dispatch}/>
       </div>
     );
   }
