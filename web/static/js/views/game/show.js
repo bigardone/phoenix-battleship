@@ -1,10 +1,10 @@
-import React, { PropTypes } from 'react';
-import { push }             from 'react-router-redux';
-import { Socket }           from 'phoenix';
-import { connect }          from 'react-redux';
-import { setPlayer }        from '../../actions/session';
-import ShipSelector         from '../../components/game/ship_selector';
-import Board                from '../../components/game/board';
+import React, { PropTypes }   from 'react';
+import { push }               from 'react-router-redux';
+import { Socket }             from 'phoenix';
+import { connect }            from 'react-redux';
+import { joinGame }           from '../../actions/game';
+import ShipSelector           from '../../components/game/ship_selector';
+import Board                  from '../../components/game/board';
 
 class GameShowView extends React.Component {
   componentDidMount() {
@@ -13,20 +13,16 @@ class GameShowView extends React.Component {
 
   _joinGame() {
     const { dispatch, player, socket } = this.props;
-
     const gameId = this.props.params.id;
 
-    const channel = socket.channel(`game:${gameId}`);
-    channel.join()
-    .receive('ok', () => {
-      console.log('ok');
-    })
-    .receive('error', (payload) => {
-      if (payload.reason === 'No more players allowed') dispatch(push('/'));
-    });
+    dispatch(joinGame(socket, player, gameId));
   }
 
   render() {
+    const { game } = this.props;
+
+    if (!game) return false;
+
     return (
       <div id="game_show" className="view-container">
         <section id="boards_container">
@@ -34,7 +30,7 @@ class GameShowView extends React.Component {
             Header
           </header>
           <ShipSelector />
-          <Board/>
+          <Board data={game.my_board}/>
         </section>
         <aside id="chat_container">
         </aside>
@@ -44,7 +40,7 @@ class GameShowView extends React.Component {
 }
 
 const mapStateToProps = (state) => (
-  state.session
+  { ...state.session, ...state.game }
 );
 
 export default connect(mapStateToProps)(GameShowView);
