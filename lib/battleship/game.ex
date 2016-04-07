@@ -3,6 +3,7 @@ defmodule Battleship.Game do
   Game server
   """
   use GenServer
+  require Logger
   alias Battleship.Player
   alias Battleship.Game.Board
 
@@ -24,6 +25,7 @@ defmodule Battleship.Game do
   def join(id, %Player{} = player, pid), do: try_call(id, {:join, player, pid})
 
   def get_data(id), do: try_call(id, :get_data)
+  def get_data(id, player_id), do: try_call(id, {:get_data, player_id})
 
   # SERVER
 
@@ -34,7 +36,7 @@ defmodule Battleship.Game do
       game.attacker != nil and game.defender != nil ->
         {:reply, {:error, "No more players allowed"}, game}
       Enum.member?([game.attacker, game.defender], player) ->
-        {:reply, {:error, "Player already joined"}, game}
+        {:reply, {:ok, self}, game}
       true ->
         Process.monitor(pid)
         create_board(player)
@@ -48,6 +50,15 @@ defmodule Battleship.Game do
   end
 
   def handle_call(:get_data, _from, game), do: {:reply, %{game | channels: nil}, game}
+  def handle_call({:get_data, player_id}, _from, game) do
+    Logger.debug "Getting Game data for player #{player_id}"
+
+    game_data = game
+    |> Map.delete(:channels)
+    |> Map.put(:my_board, Board.get_data(player_id))
+
+    {:reply, game_data, game}
+  end
 
   # def handle_info({:DOWN, _ref, :process, _pid, _reason}, game) do
   #   for player <- [game.attacker, game.defender], do: destroy_board(player)

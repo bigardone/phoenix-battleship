@@ -3,7 +3,7 @@ defmodule Battleship.GameChannel do
   Game channel
   """
   use Phoenix.Channel
-  alias Battleship.{Game}
+  alias Battleship.{Player, Game}
   require Logger
 
   def join("game:" <> game_id, _message, socket) do
@@ -13,11 +13,18 @@ defmodule Battleship.GameChannel do
       {:ok, pid} ->
         # Process.link(pid)
 
-        game = Game.get_data(game_id)
-
-        {:ok, %{game: game}, assign(socket, :game_id, game_id)}
+        {:ok, assign(socket, :game_id, game_id)}
       {:error, reason} ->
         {:error, %{reason: reason}}
     end
+  end
+
+  def handle_in("game:get_data", _message, socket) do
+    %Player{id: player_id} = socket.assigns.player
+    game_id = socket.assigns.game_id
+
+    data = Game.get_data(game_id, player_id)
+
+    {:reply, {:ok, %{game: data}}, socket}
   end
 end
