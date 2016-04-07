@@ -6,5 +6,6 @@ export default {
   HOME_NEW_GAME: 'HOME_NEW_GAME',
 
   // Game
-  GAME_JOIN: 'GAME_JOIN',
+  GAME_SET_CHANNEL: 'GAME_SET_CHANNEL',
+  GAME_SET_GAME: 'GAME_SET_GAME',
 };
