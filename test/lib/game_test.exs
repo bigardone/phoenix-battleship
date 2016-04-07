@@ -19,7 +19,7 @@ defmodule Battleship.GameTest do
 
   test "joining a game", %{pid: pid} do
     assert {:ok, ^pid} = Game.join(@id, %Player{id: 1}, self)
-    assert {:error, "Player already joined"} = Game.join(@id, %Player{id: 1}, self)
+    assert {:ok, ^pid} = Game.join(@id, %Player{id: 1}, self)
     assert {:ok, ^pid} = Game.join(@id, %Player{id: 2}, self)
     assert {:error, "No more players allowed"} = Game.join(@id, %Player{id: 1}, self)
 

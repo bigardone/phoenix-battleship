@@ -13,8 +13,8 @@ defmodule Battleship.Game.BoardTest do
       %Ship{x: 0, y: 0, size: 5, orientation: :vertical},
       %Ship{x: 1, y: 0, size: 4, orientation: :vertical},
       %Ship{x: 2, y: 0, size: 3, orientation: :vertical},
-      %Ship{x: 3, y: 0, size: 3, orientation: :vertical},
-      %Ship{x: 4, y: 0, size: 2, orientation: :vertical}
+      %Ship{x: 3, y: 0, size: 2, orientation: :vertical},
+      %Ship{x: 4, y: 0, size: 1, orientation: :vertical}
     ]
 
     on_exit fn ->
@@ -65,6 +65,6 @@ defmodule Battleship.Game.BoardTest do
     valid_ships
     |> Enum.each(&Board.add_ship(@player_id, &1))
 
-    assert {:ok, %Board{grid: %{"00" => "*"}, hit_points: 16}} = Board.take_shot(@player_id, x: 0, y: 0)
+    assert {:ok, %Board{grid: %{"00" => "*"}, hit_points: 14}} = Board.take_shot(@player_id, x: 0, y: 0)
   end
 end
