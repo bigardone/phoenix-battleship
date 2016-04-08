@@ -20,11 +20,24 @@ defmodule Battleship.GameChannel do
   end
 
   def handle_in("game:get_data", _message, socket) do
-    %Player{id: player_id} = socket.assigns.player
+    player = socket.assigns.player
     game_id = socket.assigns.game_id
 
-    data = Game.get_data(game_id, player_id)
+    data = Game.get_data(game_id, player.id)
 
     {:reply, {:ok, %{game: data}}, socket}
+  end
+
+  def handle_in("game:send_message", %{"text" => text}, socket) do
+    Logger.debug "Handling send_message on GameChannel"
+
+    player = socket.assigns.player
+    game_id = socket.assigns.game_id
+
+    {:ok, message} = Game.add_message(game_id, player.id, text)
+
+    broadcast! socket, "game:message_sent", %{message: message}
+
+    {:noreply, socket}
   end
 end

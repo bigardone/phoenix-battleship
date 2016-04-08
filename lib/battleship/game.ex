@@ -13,6 +13,7 @@ defmodule Battleship.Game do
     defender: nil,
     channels: [],
     rounds: [],
+    messages: [],
     over: false
   ]
 
@@ -27,11 +28,15 @@ defmodule Battleship.Game do
   def get_data(id), do: try_call(id, :get_data)
   def get_data(id, player_id), do: try_call(id, {:get_data, player_id})
 
+  def add_message(id, player_id, text), do: try_call(id, {:add_message, player_id, text})
+
   # SERVER
 
   def init(id), do: {:ok, %__MODULE__{id: id}}
 
   def handle_call({:join, player, pid}, _from, game) do
+    Logger.debug "Joinning Player to Game"
+
     cond do
       game.attacker != nil and game.defender != nil ->
         {:reply, {:error, "No more players allowed"}, game}
@@ -58,6 +63,14 @@ defmodule Battleship.Game do
     |> Map.put(:my_board, Board.get_data(player_id))
 
     {:reply, game_data, game}
+  end
+
+  def handle_call({:add_message, player_id, text}, _from, game) do
+    message = %{player_id: player_id, text: text}
+
+    game = %{game | messages: [message | game.messages]}
+
+    {:reply, {:ok, message}, game}
   end
 
   # def handle_info({:DOWN, _ref, :process, _pid, _reason}, game) do
