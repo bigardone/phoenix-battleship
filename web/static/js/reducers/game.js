@@ -13,6 +13,14 @@ export default function reducer(state = initialState, action = {}) {
     case Constants.GAME_SET_GAME:
       return { ...state, game: action.game };
 
+    case Constants.GAME_ADD_MESSAGE:
+      let messages = [...state.game.messages];
+      messages.push(action.message);
+
+      let newGame = { ...state.game, messages: messages };
+
+      return { ...state, game: newGame };
+
     default:
       return state;
   }

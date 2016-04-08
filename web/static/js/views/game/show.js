@@ -19,7 +19,7 @@ class GameShowView extends React.Component {
   }
 
   render() {
-    const { dispatch, game } = this.props;
+    const { dispatch, game, gameChannel } = this.props;
 
     if (!game) return false;
 
@@ -32,7 +32,10 @@ class GameShowView extends React.Component {
           <ShipSelector />
           <Board data={game.my_board}/>
         </section>
-        <Chat dispatch={dispatch}/>
+        <Chat
+          dispatch={dispatch}
+          gameChannel={gameChannel}
+          messages={game.messages}/>
       </div>
     );
   }
