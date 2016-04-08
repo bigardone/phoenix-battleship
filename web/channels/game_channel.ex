@@ -48,7 +48,7 @@ defmodule Battleship.GameChannel do
     player = socket.assigns.player
     game_id = socket.assigns.game_id
 
-    ship = %Ship{x: ship["x"], y: ship["y"], size: ship["size"]}
+    ship = %Ship{x: ship["x"], y: ship["y"], size: ship["size"], orientation: String.to_atom(ship["orientation"])}
     Logger.debug "#{inspect ship}"
 
     case Board.add_ship(player.id, ship) do
