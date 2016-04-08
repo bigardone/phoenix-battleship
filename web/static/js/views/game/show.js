@@ -5,6 +5,7 @@ import { joinGame }           from '../../actions/game';
 import ShipSelector           from '../../components/game/ship_selector';
 import Board                  from '../../components/game/board';
 import Chat                   from '../../components/game/chat';
+import Header                 from '../../components/game/header';
 
 class GameShowView extends React.Component {
   componentDidMount() {
@@ -19,18 +20,23 @@ class GameShowView extends React.Component {
   }
 
   render() {
-    const { dispatch, game, gameChannel } = this.props;
+    const { dispatch, game, gameChannel, selectedShip } = this.props;
 
     if (!game) return false;
 
     return (
       <div id="game_show" className="view-container">
         <section id="boards_container">
-          <header>
-            Header
-          </header>
-          <ShipSelector />
-          <Board data={game.my_board}/>
+          <Header game={game} />
+          <ShipSelector
+            dispatch={dispatch}
+            game={game}
+            selectedShip={selectedShip} />
+          <Board
+            dispatch={dispatch}
+            gameChannel={gameChannel}
+            selectedShip={selectedShip}
+            data={game.my_board}/>
         </section>
         <Chat
           dispatch={dispatch}

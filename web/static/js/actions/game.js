@@ -38,10 +38,15 @@ export function setChannelAndGame(channel, game) {
 }
 
 export function setGame(game) {
-  return dispatch => {
-    dispatch({
-      type: Constants.GAME_SET_GAME,
-      game: game,
-    });
+  return {
+    type: Constants.GAME_SET_GAME,
+    game: game,
+  };
+}
+
+export function selectShip(ship) {
+  return {
+    type: Constants.GAME_SETUP_SELECT_SHIP,
+    ship: ship,
   };
 }
