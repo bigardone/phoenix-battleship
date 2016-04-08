@@ -11,17 +11,21 @@
     display: flex
     flex-direction: column
     flex-wrap: wrap;
-    padding: $small-spacing
 
-    > header
+    #game_header
       flex: 1
+      background: $gray
+      padding: $small-spacing
 
     > .grid
       flex: 5
-      width: 100%
-      height: 100%
       display: flex
       flex-direction: column
+      padding: $small-spacing
+
+      &.pointer
+        .cell:not(.header)
+          cursor: pointer
 
       .row
         flex: 1
@@ -35,6 +39,9 @@
           display: flex
           align-items: center
           justify-content: center
+
+          &.ship
+            background: $gray
 
           &:last-of-type
             border-right-width: 3px
@@ -55,7 +62,22 @@
             border-bottom-width: 3px
 
     #ship_selector
-      flex: 3
+      padding: $small-spacing
+
+      ul
+        list-style: none
+        padding: 0
+        margin: 0
+
+        li
+          padding: $small-spacing
+          border: 1px solid rgba($blue, .5)
+          margin-bottom: 1em
+          width: auto
+          cursor: pointer
+
+          &.active
+            background-color: rgba($blue, .5)
 
 
 
