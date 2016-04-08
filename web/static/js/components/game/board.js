@@ -9,27 +9,27 @@ export default class Board extends React.Component {
 
     let rows = [this._buildRowHeader()];
 
-    for (var x = 0; x < 10; x++) {
-      let cells = [<div key={`header-${x}`} className="header cell">{x + 1}</div>];
+    for (var y = 0; y < 10; y++) {
+      let cells = [<div key={`header-${y}`} className="header cell">{y + 1}</div>];
 
-      for (var y = 0; y < 10; y++) {
-        cells.push(this._renderCell(x, y, grid[`${y}${x}`]));
+      for (var x = 0; x < 10; x++) {
+        cells.push(this._renderCell(y, x, grid[`${y}${x}`]));
       }
 
-      rows.push(<div className="row" key={x}>{cells}</div>);
+      rows.push(<div className="row" key={y}>{cells}</div>);
     }
 
     return rows;
   }
 
-  _renderCell(x, y, value) {
+  _renderCell(y, x, value) {
     const { selectedShip, gameChannel, dispatch } = this.props;
+    const key = `${y}${x}`;
 
     const onClick = (e) => {
+      console.log(key);
       if (selectedShip.name === null) return false;
       if (value != Constants.GRID_VALUE_WATTER) return false;
-
-      console.log(y, x);
 
       const ship = {
         x: x,
@@ -53,7 +53,7 @@ export default class Board extends React.Component {
     return (
       <div
         className={classes}
-        key={`${x}${y}`}
+        key={key}
         onClick={onClick}>{value}</div>
     );
   }

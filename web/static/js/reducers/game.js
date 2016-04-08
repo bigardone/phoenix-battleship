@@ -4,7 +4,7 @@ const initialState = {
   game: null,
   gameChannel: null,
   selectedShip: {
-    name:null,
+    name: null,
     size: 0,
     orientation: Constants.SHIP_ORIENTATION_HORIZONTAL,
   },
@@ -27,7 +27,17 @@ export default function reducer(state = initialState, action = {}) {
       return { ...state, game: newGame };
 
     case Constants.GAME_SETUP_SELECT_SHIP:
-      const ship = { ...state.selectedShip, ...action.ship };
+      let orientation = state.selectedShip.orientation;
+
+      if (state.selectedShip.name == action.ship.name) {
+        let orientations = [Constants.SHIP_ORIENTATION_HORIZONTAL, Constants.SHIP_ORIENTATION_VERTICAL];
+        const index = orientations.indexOf(state.selectedShip.orientation);
+        orientations.splice(index, 1);
+        orientation = orientations[0];
+      }
+
+      const ship = { ...state.selectedShip, ...action.ship, orientation: orientation };
+
       return { ...state, selectedShip: ship };
 
     default:

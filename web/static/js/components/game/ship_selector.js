@@ -27,11 +27,13 @@ export default class ShipSelector extends React.Component {
         active: ship.name == selectedShip.name,
       });
 
+      const orientation = ship.name == selectedShip.name ? selectedShip.orientation : '';
+
       return (
         <li
           className={classes}
           key={i}
-          onClick={handleClick}>{ship.name}</li>
+          onClick={handleClick}>{ship.name} {orientation}</li>
       );
     });
 
