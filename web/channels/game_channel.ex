@@ -3,7 +3,8 @@ defmodule Battleship.GameChannel do
   Game channel
   """
   use Phoenix.Channel
-  alias Battleship.{Player, Game}
+  alias Battleship.{Game, Ship}
+  alias Battleship.Game.Board
   require Logger
 
   def join("game:" <> game_id, _message, socket) do
@@ -39,5 +40,24 @@ defmodule Battleship.GameChannel do
     broadcast! socket, "game:message_sent", %{message: message}
 
     {:noreply, socket}
+  end
+
+  def handle_in("game:place_ship", %{"ship" => ship}, socket) do
+    Logger.debug "Handling place_ship on GameChannel"
+
+    player = socket.assigns.player
+    game_id = socket.assigns.game_id
+
+    ship = %Ship{x: ship["x"], y: ship["y"], size: ship["size"]}
+    Logger.debug "#{inspect ship}"
+
+    case Board.add_ship(player.id, ship) do
+      {:ok, _} ->
+        data = Game.get_data(game_id, player.id)
+
+        {:reply, {:ok, %{game: data}}, socket}
+      {:error, reason} ->
+        {:reply, {:error, %{reason: reason}}, socket}
+    end
   end
 end
