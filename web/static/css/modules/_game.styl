@@ -87,17 +87,24 @@
     display: flex
     flex-direction: column
     padding: $small-spacing
+    display: flex
 
     .messages-container
       background: rgba(#fff, .5)
       flex: 1
       border-radius: $base-border-radius
-      padding: $base-spacing
+      display: flex
+      padding: $base-spacing 0
 
       ul
         list-style: none
         padding: 0
         margin: 0
+        overflow-y: scroll
+        flex: 1
+
+        li
+          padding: 0 $base-spacing
 
     .form-container
       padding-top: $small-spacing
