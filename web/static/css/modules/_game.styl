@@ -89,6 +89,17 @@
     padding: $small-spacing
     display: flex
 
+    .status
+      display: inline-block
+      width: 10px
+      height: 10px
+      vertical-align: middle
+      background: $gray
+      border-radius: 50%
+
+      &.connected
+        background: $green
+
     .messages-container
       background: rgba(#fff, .5)
       flex: 1
