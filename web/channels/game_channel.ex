@@ -3,7 +3,7 @@ defmodule Battleship.GameChannel do
   Game channel
   """
   use Phoenix.Channel
-  alias Battleship.{Game, Ship}
+  alias Battleship.{Game, Ship, Player}
   alias Battleship.Game.Board
   require Logger
 
@@ -25,8 +25,9 @@ defmodule Battleship.GameChannel do
   def handle_in("game:joined", _message, socket) do
     Logger.debug "Broadcasting player joined"
     player = socket.assigns.player
+    board = Board.get_opponents_data(player.id)
 
-    broadcast! socket, "game:player_joined", %{player: player}
+    broadcast! socket, "game:player_joined", %{player: player, board: board}
     {:noreply, socket}
   end
 
@@ -69,11 +70,18 @@ defmodule Battleship.GameChannel do
 
     case Board.add_ship(player.id, ship) do
       {:ok, _} ->
-        data = Game.get_data(game_id, player.id)
+        game = Game.get_data(game_id, player.id)
+        board = Board.get_opponents_data(player.id)
 
-        {:reply, {:ok, %{game: data}}, socket}
+        broadcast(socket, "game:player:#{get_opponents_id(game, player.id)}:opponents_board_changed", %{board: board})
+
+        {:reply, {:ok, %{game: game}}, socket}
       {:error, reason} ->
         {:reply, {:error, %{reason: reason}}, socket}
     end
   end
+
+  defp get_opponents_id(%Game{attacker: %Player{id: player_id}, defender: nil}, player_id), do: nil
+  defp get_opponents_id(%Game{attacker: %Player{id: player_id}, defender: defender}, player_id), do: defender.id
+  defp get_opponents_id(%Game{attacker: attacker, defender: %Player{id: player_id}}, player_id), do: attacker.id
 end

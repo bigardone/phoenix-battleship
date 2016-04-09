@@ -83,6 +83,22 @@ defmodule Battleship.Game.Board do
   end
 
   @doc """
+  Returns the board for an opponent player, replacing ship positions with
+  water values.
+  """
+  def get_opponents_data(player_id) do
+    Logger.debug "Getting opponents board state for player #{player_id}"
+
+    board = Agent.get(ref(player_id), &(&1))
+
+    new_grid = board
+    |> Map.get(:grid)
+    |> Enum.reduce(%{}, fn({coords, value}, acc) -> Map.put(acc, coords, opponent_grid_value(value)) end)
+
+    %{board | ships: nil, grid: new_grid}
+  end
+
+  @doc """
   Takes a hit, checks the result and returns the board updated
   """
   def take_shot(player_id, x: x, y: y) do
@@ -137,7 +153,7 @@ defmodule Battleship.Game.Board do
     0..@size - 1
     |> Enum.reduce([], &build_rows/2)
     |> List.flatten
-    |> Enum.reduce(%{}, fn item, acc -> Map.put(acc, item, "·") end)
+    |> Enum.reduce(%{}, fn item, acc -> Map.put(acc, item, @grid_value_watter) end)
   end
 
   defp build_rows(y, rows) do
@@ -171,4 +187,7 @@ defmodule Battleship.Game.Board do
   defp set_is_ready(board), do: %{board | ready: length(board.ships) == length(@ships_sizes)}
 
   defp set_hit_points(board), do: %{board | hit_points: Enum.reduce(board.ships, 0, &(&1.size + &2))}
+
+  defp opponent_grid_value(@grid_value_ship), do: @grid_value_watter
+  defp opponent_grid_value(value), do: value
 end
