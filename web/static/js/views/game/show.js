@@ -19,6 +19,12 @@ class GameShowView extends React.Component {
     dispatch(joinGame(socket, player, gameId));
   }
 
+  _opponentIsConnected() {
+    const { player, game } = this.props;
+
+    return player.id == game.attacker.id ? game.defender != null : game.attacker != null;
+  }
+
   render() {
     const { dispatch, game, gameChannel, selectedShip } = this.props;
 
@@ -40,6 +46,7 @@ class GameShowView extends React.Component {
         </section>
         <Chat
           dispatch={dispatch}
+          opponentIsConnected={::this._opponentIsConnected()}
           gameChannel={gameChannel}
           messages={game.messages}/>
       </div>

@@ -18,6 +18,14 @@ export default function reducer(state = initialState, action = {}) {
     case Constants.GAME_SET_GAME:
       return { ...state, game: action.game, selectedShip: initialState.selectedShip };
 
+    case Constants.GAME_PLAYER_JOINED:
+      let game = { ...state.game };
+      const { player } = action;
+
+      if (game.attacker != null && game.attacker.id != player.id) game.defender = player;
+
+      return { ...state, game: game };
+
     case Constants.GAME_ADD_MESSAGE:
       let messages = [...state.game.messages];
       messages.push(action.message);

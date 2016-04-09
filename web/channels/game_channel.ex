@@ -10,7 +10,9 @@ defmodule Battleship.GameChannel do
   def join("game:" <> game_id, _message, socket) do
     Logger.debug "Joining Game channel", game_id: game_id
 
-    case Game.join(game_id, socket.assigns.player, socket.channel_pid) do
+    player = socket.assigns.player
+
+    case Game.join(game_id, player, socket.channel_pid) do
       {:ok, pid} ->
         # Process.link(pid)
 
@@ -18,6 +20,14 @@ defmodule Battleship.GameChannel do
       {:error, reason} ->
         {:error, %{reason: reason}}
     end
+  end
+
+  def handle_in("game:joined", _message, socket) do
+    Logger.debug "Broadcasting player joined"
+    player = socket.assigns.player
+
+    broadcast! socket, "game:player_joined", %{player: player}
+    {:noreply, socket}
   end
 
   def handle_in("game:get_data", _message, socket) do

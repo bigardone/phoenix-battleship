@@ -11,6 +11,8 @@ export function joinGame(socket, player, gameId) {
       .receive('ok', (payload) => {
         dispatch(setChannelAndGame(channel, payload.game));
       });
+
+      channel.push('game:joined');
     })
     .receive('error', (payload) => {
       if (payload.reason === 'No more players allowed') dispatch(push('/'));
@@ -21,6 +23,13 @@ export function joinGame(socket, player, gameId) {
       dispatch({
         type: Constants.GAME_ADD_MESSAGE,
         message: payload.message,
+      });
+    });
+
+    channel.on('game:player_joined', (payload) => {
+      dispatch({
+        type: Constants.GAME_PLAYER_JOINED,
+        player: payload.player,
       });
     });
   };

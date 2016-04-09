@@ -1,8 +1,24 @@
 import React, {PropTypes} from 'react';
+import classnames         from 'classnames';
 
 export default class Chat extends React.Component {
   _handleFormSubmit(e) {
     e.preventDefault();
+  }
+
+  _renderOpponentStatus(opponentIsConnected) {
+    const classes = classnames({
+      status: true,
+      connected: opponentIsConnected,
+    });
+
+    const status = opponentIsConnected ? 'Opponent is connected' : 'No opponent yet';
+
+    return (
+      <p>
+        <i className={classes}/> {status}
+      </p>
+    );
   }
 
   _renderMessages() {
@@ -36,14 +52,20 @@ export default class Chat extends React.Component {
   }
 
   render() {
+    const { opponentIsConnected } = this.props;
+
     return (
       <aside id="chat_container">
+        <header>
+          {::this._renderOpponentStatus(opponentIsConnected)}
+        </header>
         <div className="messages-container">
           {::this._renderMessages()}
         </div>
         <div className="form-container">
           <form onSubmit={::this._handleFormSubmit}>
             <textarea
+              disabled={!opponentIsConnected}
               ref="messageText"
               onKeyUp={::this._handleTextKeyUp}
               placeholder="Type message and hit intro..."/>
