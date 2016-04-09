@@ -30,6 +30,14 @@ export function joinGame(socket, player, gameId) {
       dispatch({
         type: Constants.GAME_PLAYER_JOINED,
         player: payload.player,
+        board: payload.board,
+      });
+    });
+
+    channel.on(`game:player:${player.id}:opponents_board_changed`, (payload) => {
+      dispatch({
+        type: Constants.GAME_OPPONENTS_BOARD_UPDATE,
+        board: payload.board,
       });
     });
   };

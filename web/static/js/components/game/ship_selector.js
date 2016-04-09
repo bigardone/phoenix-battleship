@@ -45,6 +45,9 @@ export default class ShipSelector extends React.Component {
   render() {
     return (
       <div id="ship_selector">
+        <header>
+          <h2>Your ships</h2>
+        </header>
         {::this._renderAvailableShips()}
       </div>
     );

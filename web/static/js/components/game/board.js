@@ -54,7 +54,7 @@ export default class Board extends React.Component {
       <div
         className={classes}
         key={key}
-        onClick={onClick}>{value}</div>
+        onClick={onClick}></div>
     );
   }
 
@@ -74,6 +74,8 @@ export default class Board extends React.Component {
 
   render() {
     const { data, selectedShip } = this.props;
+
+    if (!data) return false;
 
     const classes = classnames({
       grid: true,

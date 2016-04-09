@@ -16,13 +16,18 @@ export default function reducer(state = initialState, action = {}) {
       return { ...state, gameChannel: action.channel };
 
     case Constants.GAME_SET_GAME:
-      return { ...state, game: action.game, selectedShip: initialState.selectedShip };
+      var game = { ...state.game, ...action.game };
+
+      return { ...state, game: game, selectedShip: initialState.selectedShip };
 
     case Constants.GAME_PLAYER_JOINED:
-      let game = { ...state.game };
-      const { player } = action;
+      var game = { ...state.game };
+      const { player, board } = action;
 
-      if (game.attacker != null && game.attacker.id != player.id) game.defender = player;
+      if (game.attacker != null && game.attacker.id != player.id) {
+        game.defender = player;
+        game.opponents_board = board;
+      }
 
       return { ...state, game: game };
 
@@ -47,6 +52,11 @@ export default function reducer(state = initialState, action = {}) {
       const ship = { ...state.selectedShip, ...action.ship, orientation: orientation };
 
       return { ...state, selectedShip: ship };
+
+    case Constants.GAME_OPPONENTS_BOARD_UPDATE:
+      var game = { ...state.game, opponents_board: action.board };
+
+      return { ...state, game: game };
 
     default:
       return state;

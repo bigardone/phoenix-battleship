@@ -10,14 +10,31 @@
     flex: 3
     display: flex
     flex-direction: column
-    flex-wrap: wrap;
+    flex-wrap: wrap
+    overflow-y: scroll
+    height: 100%
 
     #game_header
-      flex: 1
       background: $gray
-      padding: $small-spacing
+      padding: $base-spacing*1.5 $small-spacing
+      text-align: center
 
-    > .grid
+      h1
+        margin: 0
+
+    #opponents_board_container
+      flex: 1
+      display: flex
+      flex-direction: row
+
+    #my_board_container
+      flex: 1
+      display: flex
+      flex-direction: row
+      background-color: $light-gray
+
+
+    .grid
       flex: 5
       display: flex
       flex-direction: column
@@ -33,12 +50,15 @@
 
         > .cell
           flex: 1
-          border-color: rgba(#fff, .5)
+          border-color: rgba(#000, .2)
           border-style: solid
           border-width: 1px 1px 0 0
           display: flex
           align-items: center
           justify-content: center
+
+          &:not(.header)
+            background: $blue
 
           &.ship
             background: $gray
@@ -52,6 +72,7 @@
 
           &.header
             border: 0px none
+            font-family: $heading-font-family
 
         &:nth-child(2)
           > .cell
@@ -62,7 +83,8 @@
             border-bottom-width: 3px
 
     #ship_selector
-      padding: $small-spacing
+      flex: 2
+      padding: $small-spacing*5 $small-spacing $small-spacing $small-spacing
 
       ul
         list-style: none

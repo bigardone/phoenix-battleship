@@ -34,15 +34,24 @@ class GameShowView extends React.Component {
       <div id="game_show" className="view-container">
         <section id="boards_container">
           <Header game={game} />
-          <ShipSelector
-            dispatch={dispatch}
-            game={game}
-            selectedShip={selectedShip} />
-          <Board
-            dispatch={dispatch}
-            gameChannel={gameChannel}
-            selectedShip={selectedShip}
-            data={game.my_board}/>
+          <div id="opponents_board_container">
+            <Board
+              dispatch={dispatch}
+              gameChannel={gameChannel}
+              selectedShip={selectedShip}
+              data={game.opponents_board}/>
+          </div>
+          <div id="my_board_container">
+            <ShipSelector
+              dispatch={dispatch}
+              game={game}
+              selectedShip={selectedShip} />
+            <Board
+              dispatch={dispatch}
+              gameChannel={gameChannel}
+              selectedShip={selectedShip}
+              data={game.my_board}/>
+          </div>
         </section>
         <Chat
           dispatch={dispatch}
