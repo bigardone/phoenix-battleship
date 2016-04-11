@@ -73,15 +73,11 @@ defmodule Battleship.GameChannel do
         game = Game.get_data(game_id, player.id)
         board = Board.get_opponents_data(player.id)
 
-        broadcast(socket, "game:player:#{get_opponents_id(game, player.id)}:opponents_board_changed", %{board: board})
+        broadcast(socket, "game:player:#{Game.get_opponents_id(game, player.id)}:opponents_board_changed", %{board: board})
 
         {:reply, {:ok, %{game: game}}, socket}
       {:error, reason} ->
         {:reply, {:error, %{reason: reason}}, socket}
     end
   end
-
-  defp get_opponents_id(%Game{attacker: %Player{id: player_id}, defender: nil}, player_id), do: nil
-  defp get_opponents_id(%Game{attacker: %Player{id: player_id}, defender: defender}, player_id), do: defender.id
-  defp get_opponents_id(%Game{attacker: attacker, defender: %Player{id: player_id}}, player_id), do: attacker.id
 end

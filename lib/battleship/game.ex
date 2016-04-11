@@ -4,7 +4,7 @@ defmodule Battleship.Game do
   """
   use GenServer
   require Logger
-  alias Battleship.Player
+  alias Battleship.{Game,Player}
   alias Battleship.Game.Board
 
   defstruct [
@@ -62,6 +62,12 @@ defmodule Battleship.Game do
     |> Map.delete(:channels)
     |> Map.put(:my_board, Board.get_data(player_id))
 
+    opponent_id = get_opponents_id(game, player_id)
+
+    if opponent_id != nil do
+      game_data = Map.put(game_data, :opponents_board, Board.get_opponents_data(opponent_id))
+    end
+
     {:reply, game_data, game}
   end
 
@@ -72,6 +78,10 @@ defmodule Battleship.Game do
 
     {:reply, {:ok, message}, game}
   end
+
+  def get_opponents_id(%Game{attacker: %Player{id: player_id}, defender: nil}, player_id), do: nil
+  def get_opponents_id(%Game{attacker: %Player{id: player_id}, defender: defender}, player_id), do: defender.id
+  def get_opponents_id(%Game{attacker: attacker, defender: %Player{id: player_id}}, player_id), do: attacker.id
 
   # def handle_info({:DOWN, _ref, :process, _pid, _reason}, game) do
   #   for player <- [game.attacker, game.defender], do: destroy_board(player)
