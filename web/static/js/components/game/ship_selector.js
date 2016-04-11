@@ -15,6 +15,9 @@ export default class ShipSelector extends React.Component {
     const { dispatch, selectedShip, game } = this.props;
 
     const ships = game.my_board.ships.map((ship, i) => {
+      console.log(ship);
+      if (Object.keys(ship.coordinates).length != 0) return false;
+
       const config = shipConfigurations.find((item) => item.size === ship.size);
 
       const handleClick = (e) => {
@@ -29,13 +32,10 @@ export default class ShipSelector extends React.Component {
         active: config.name == selectedShip.name,
       });
 
-      const orientation = config.name == selectedShip.name ? selectedShip.orientation : '';
-
       return (
         <li
           className={classes}
-          key={i}
-          onClick={handleClick}>{config.name} {orientation}</li>
+          key={i}>{::this._renderShip(ship.size, handleClick)}</li>
       );
     });
 
@@ -44,12 +44,28 @@ export default class ShipSelector extends React.Component {
     );
   }
 
+  _renderShip(size, handleClick) {
+    const nodes = [];
+
+    for (var i = 0; i < size; i++) {
+      nodes.push(<span key={i}></span>);
+    }
+
+    return (
+      <div className="ship" onClick={handleClick}>{nodes}</div>
+    );
+  }
+
   render() {
+    const { selectedShip, game } = this.props;
+
+    if (game.my_board.ready) return false;
+
     return (
       <div id="ship_selector">
-        <header>
-          <h2>Your ships</h2>
-        </header>
+        <p>
+          Select a ship by clicking on it. Click on it again to switch orientation.
+          The current orientation is: <span className="orientation">{selectedShip.orientation}</span></p>
         {::this._renderAvailableShips()}
       </div>
     );
