@@ -7,7 +7,8 @@ defmodule Battleship.Ship do
     x: 0,
     y: 0,
     size: 0,
-    orientation: :vertical
+    orientation: :vertical,
+    coordinates: %{}
   ]
 
   def coordinates(%__MODULE__{x: x, y: y, size: size, orientation: orientation}) when orientation == :vertical do

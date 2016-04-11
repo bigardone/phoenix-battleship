@@ -29,8 +29,8 @@ defmodule Battleship.Game.Board do
     Logger.debug "Starting board for player #{player_id}"
 
     grid = build_grid
-
-    Agent.start(fn -> %__MODULE__{player_id: player_id, grid: grid} end, name: ref(player_id))
+    ships = Enum.map(@ships_sizes, &(%Ship{size: &1}))
+    Agent.start(fn -> %__MODULE__{player_id: player_id, grid: grid, ships: ships} end, name: ref(player_id))
   end
 
   @doc """
@@ -118,7 +118,7 @@ defmodule Battleship.Game.Board do
   # Checks if a similar ship has been already placed
   defp ship_already_placed?(%__MODULE__{ships: ships}, %Ship{size: size}) do
     permited_amount = Enum.count(@ships_sizes, &(&1 == size))
-    Enum.count(ships, &(&1.size == size)) == permited_amount
+    Enum.count(ships, &(&1.size == size and ship_placed?(&1))) == permited_amount
   end
 
   # Checks if the ship is inside the boards boundaries
@@ -138,14 +138,17 @@ defmodule Battleship.Game.Board do
   end
 
   # Adds a ship to the grid
-  defp add_ship_to_grid(board, ship) do
-    ship_values = ship
+  defp add_ship_to_grid(%__MODULE__{ships: ships} = board, ship) do
+    coordinates = ship
       |> Ship.coordinates
       |> Enum.reduce(%{}, fn(coord, acc) -> Map.put(acc, coord, @grid_value_ship) end)
 
-    grid = Map.merge board.grid, ship_values
+    ship_index = Enum.find_index(ships, &(&1.size == ship.size and !ship_placed?(&1)))
+    ships = List.update_at(ships, ship_index, &(%{&1 | x: ship.x, y: ship.y, coordinates: coordinates}))
 
-    %{board | grid: grid, ships: [ship | board.ships]}
+    grid = Map.merge board.grid, coordinates
+
+    %{board | grid: grid, ships: ships}
   end
 
   # Builds a default grid map
@@ -184,10 +187,12 @@ defmodule Battleship.Game.Board do
     {:ok, get_data(board.player_id)}
   end
 
-  defp set_is_ready(board), do: %{board | ready: length(board.ships) == length(@ships_sizes)}
+  defp set_is_ready(board), do: %{board | ready: Enum.all?(board.ships, &ship_placed?(&1))}
 
   defp set_hit_points(board), do: %{board | hit_points: Enum.reduce(board.ships, 0, &(&1.size + &2))}
 
   defp opponent_grid_value(@grid_value_ship), do: @grid_value_watter
   defp opponent_grid_value(value), do: value
+
+  defp ship_placed?(ship), do: length(Map.keys(ship.coordinates)) != 0
 end
