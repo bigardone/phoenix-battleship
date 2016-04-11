@@ -14,26 +14,28 @@ export default class ShipSelector extends React.Component {
   _renderAvailableShips() {
     const { dispatch, selectedShip, game } = this.props;
 
-    const ships = shipConfigurations.map((ship, i) => {
+    const ships = game.my_board.ships.map((ship, i) => {
+      const config = shipConfigurations.find((item) => item.size === ship.size);
+
       const handleClick = (e) => {
         e.preventDefault();
 
         if (game.my_board.ready) return false;
 
-        dispatch(selectShip(ship));
+        dispatch(selectShip(config));
       };
 
       const classes = classnames({
-        active: ship.name == selectedShip.name,
+        active: config.name == selectedShip.name,
       });
 
-      const orientation = ship.name == selectedShip.name ? selectedShip.orientation : '';
+      const orientation = config.name == selectedShip.name ? selectedShip.orientation : '';
 
       return (
         <li
           className={classes}
           key={i}
-          onClick={handleClick}>{ship.name} {orientation}</li>
+          onClick={handleClick}>{config.name} {orientation}</li>
       );
     });
 
