@@ -23,27 +23,9 @@ export default class Board extends React.Component {
   }
 
   _renderCell(y, x, value) {
-    const { selectedShip, gameChannel, dispatch } = this.props;
     const key = `${y}${x}`;
 
-    const onClick = (e) => {
-      console.log(key);
-      if (selectedShip.name === null) return false;
-      if (value != Constants.GRID_VALUE_WATTER) return false;
-
-      const ship = {
-        x: x,
-        y: y,
-        size: selectedShip.size,
-        orientation: selectedShip.orientation,
-      };
-
-      gameChannel.push('game:place_ship', { ship: ship })
-      .receive('ok', (payload) => {
-        dispatch(setGame(payload.game));
-      })
-      .receive('error', (payload) => console.log(payload));
-    };
+    const onClick = this._cellOnClick(y, x, value);
 
     const classes = classnames({
       cell: true,
@@ -79,7 +61,7 @@ export default class Board extends React.Component {
 
     const classes = classnames({
       grid: true,
-      pointer: selectedShip.name != null,
+      pointer: selectedShip && selectedShip.name != null,
     });
 
     return (

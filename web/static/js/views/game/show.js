@@ -4,6 +4,8 @@ import { connect }            from 'react-redux';
 import { joinGame }           from '../../actions/game';
 import ShipSelector           from '../../components/game/ship_selector';
 import Board                  from '../../components/game/board';
+import MyBoard                from '../../components/game/my_board';
+import OpponentBoard          from '../../components/game/opponent_board';
 import Chat                   from '../../components/game/chat';
 import Header                 from '../../components/game/header';
 
@@ -35,10 +37,9 @@ class GameShowView extends React.Component {
         <section id="boards_container">
           <Header game={game} />
           <div id="opponents_board_container">
-            <Board
+            <OpponentBoard
               dispatch={dispatch}
               gameChannel={gameChannel}
-              selectedShip={selectedShip}
               data={game.opponents_board}/>
           </div>
           <div id="my_board_container">
@@ -46,7 +47,7 @@ class GameShowView extends React.Component {
               dispatch={dispatch}
               game={game}
               selectedShip={selectedShip} />
-            <Board
+            <MyBoard
               dispatch={dispatch}
               gameChannel={gameChannel}
               selectedShip={selectedShip}
