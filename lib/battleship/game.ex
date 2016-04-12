@@ -73,14 +73,6 @@ defmodule Battleship.Game do
     {:reply, game_data, game}
   end
 
-  def handle_call({:add_message, player_id, text}, _from, game) do
-    message = %{player_id: player_id, text: text}
-
-    game = %{game | messages: [message | game.messages]}
-
-    {:reply, {:ok, message}, game}
-  end
-
   def handle_call({:player_shot, player_id, x: x, y: y}, _from, game) do
     opponent_id = get_opponents_id(game, player_id)
 

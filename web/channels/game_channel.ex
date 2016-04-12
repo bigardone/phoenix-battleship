@@ -46,7 +46,7 @@ defmodule Battleship.GameChannel do
     player = socket.assigns.player
     game_id = socket.assigns.game_id
 
-    {:ok, message} = Game.add_message(game_id, player.id, text)
+    message = %{player_id: player.id, text: text}
 
     broadcast! socket, "game:message_sent", %{message: message}
 

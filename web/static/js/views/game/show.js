@@ -28,7 +28,7 @@ class GameShowView extends React.Component {
   }
 
   render() {
-    const { dispatch, game, gameChannel, selectedShip, player, currentTurn } = this.props;
+    const { dispatch, game, gameChannel, selectedShip, player, currentTurn, messages } = this.props;
 
     if (!game) return false;
 
@@ -71,7 +71,7 @@ class GameShowView extends React.Component {
           dispatch={dispatch}
           opponentIsConnected={::this._opponentIsConnected()}
           gameChannel={gameChannel}
-          messages={game.messages}/>
+          messages={messages}/>
       </div>
     );
   }

@@ -8,6 +8,7 @@ const initialState = {
     size: 0,
     orientation: Constants.SHIP_ORIENTATION_HORIZONTAL,
   },
+  messages: [],
   readyForBattle: false,
   currentTurn: null,
 };
@@ -58,12 +59,10 @@ export default function reducer(state = initialState, action = {}) {
       return { ...state, game: game };
 
     case Constants.GAME_ADD_MESSAGE:
-      let messages = [...state.game.messages];
+      let messages = [...state.messages];
       messages.push(action.message);
 
-      let newGame = { ...state.game, messages: messages };
-
-      return { ...state, game: newGame };
+      return { ...state, messages: messages };
 
     case Constants.GAME_SETUP_SELECT_SHIP:
       let orientation = state.selectedShip.orientation;
