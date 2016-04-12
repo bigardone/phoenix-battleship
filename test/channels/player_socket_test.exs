@@ -1,7 +1,7 @@
 defmodule Battleship.PlayerSocketTest do
   use Battleship.ChannelCase, async: true
 
-  alias Battleship.{PlayerSocket, Player}
+  alias Battleship.{PlayerSocket}
 
   @id 4 |> :crypto.strong_rand_bytes |> Base.encode64()
   @name "John"
@@ -13,7 +13,7 @@ defmodule Battleship.PlayerSocketTest do
   end
 
   test "assigns player", %{socket: socket} do
-    assert socket.assigns.player == %Player{id: @id, name: @name}
+    assert socket.assigns.player_id == @id
   end
 
   test "assigns id", %{socket: socket} do

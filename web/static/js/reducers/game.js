@@ -27,7 +27,7 @@ function currentTurn(game) {
   if (lastTurn == undefined) {
     return game.attacker;
   } else {
-    return [game.attacker, game.defender].find((player) => player.id != lastTurn.player_id);
+    return [game.attacker, game.defender].find((player) => player != lastTurn.player_id);
   }
 }
 
@@ -49,10 +49,10 @@ export default function reducer(state = initialState, action = {}) {
 
     case Constants.GAME_PLAYER_JOINED:
       var game = { ...state.game };
-      const { player, board } = action;
+      const { playerId, board } = action;
 
-      if (game.attacker != null && game.attacker.id != player.id) {
-        game.defender = player;
+      if (game.attacker != null && game.attacker != playerId) {
+        game.defender = playerId;
         game.opponents_board = board;
       }
 

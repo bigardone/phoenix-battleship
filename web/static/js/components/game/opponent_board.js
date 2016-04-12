@@ -6,9 +6,9 @@ import { setGame }        from '../../actions/game';
 
 export default class OpponentBoard extends Board {
   _cellOnClick(y, x, value) {
-    const { gameChannel, currentTurn, player, dispatch } = this.props;
+    const { gameChannel, currentTurn, playerId, dispatch } = this.props;
 
-    if (!currentTurn || currentTurn.id !== player.id) return false;
+    if (currentTurn !== playerId) return false;
 
     const key = `${y}${x}`;
 

@@ -4,7 +4,7 @@ defmodule Battleship.Game do
   """
   use GenServer
   require Logger
-  alias Battleship.{Game,Player}
+  alias Battleship.{Game}
   alias Battleship.Game.Board
 
   defstruct [
@@ -13,7 +13,6 @@ defmodule Battleship.Game do
     defender: nil,
     channels: [],
     rounds: [],
-    messages: [],
     over: false
   ]
 
@@ -23,7 +22,7 @@ defmodule Battleship.Game do
     GenServer.start_link(__MODULE__, [id], name: ref(id))
   end
 
-  def join(id, %Player{} = player, pid), do: try_call(id, {:join, player, pid})
+  def join(id, player_id, pid), do: try_call(id, {:join, player_id, pid})
 
   def get_data(id), do: try_call(id, :get_data)
   def get_data(id, player_id), do: try_call(id, {:get_data, player_id})
@@ -36,20 +35,20 @@ defmodule Battleship.Game do
 
   def init(id), do: {:ok, %__MODULE__{id: id}}
 
-  def handle_call({:join, player, pid}, _from, game) do
+  def handle_call({:join, player_id, pid}, _from, game) do
     Logger.debug "Joinning Player to Game"
 
     cond do
       game.attacker != nil and game.defender != nil ->
         {:reply, {:error, "No more players allowed"}, game}
-      Enum.member?([game.attacker, game.defender], player) ->
+      Enum.member?([game.attacker, game.defender], player_id) ->
         {:reply, {:ok, self}, game}
       true ->
         Process.monitor(pid)
-        create_board(player)
+        create_board(player_id)
 
         game = game
-        |> add_player(player)
+        |> add_player(player_id)
         |> add_channel(pid)
 
         {:reply, {:ok, self}, game}
@@ -83,9 +82,9 @@ defmodule Battleship.Game do
     {:reply, {:ok, game}, game}
   end
 
-  def get_opponents_id(%Game{attacker: %Player{id: player_id}, defender: nil}, player_id), do: nil
-  def get_opponents_id(%Game{attacker: %Player{id: player_id}, defender: defender}, player_id), do: defender.id
-  def get_opponents_id(%Game{attacker: attacker, defender: %Player{id: player_id}}, player_id), do: attacker.id
+  def get_opponents_id(%Game{attacker: player_id, defender: nil}, player_id), do: nil
+  def get_opponents_id(%Game{attacker: player_id, defender: defender}, player_id), do: defender
+  def get_opponents_id(%Game{attacker: attacker, defender: player_id}, player_id), do: attacker
 
   # def handle_info({:DOWN, _ref, :process, _pid, _reason}, game) do
   #   for player <- [game.attacker, game.defender], do: destroy_board(player)
@@ -96,20 +95,20 @@ defmodule Battleship.Game do
   @doc """
   Creates a new Board for a given Player
   """
-  defp create_board(%Player{id: id}), do: Board.create(id)
+  defp create_board(player_id), do: Board.create(player_id)
 
   @doc """
   Generates global reference
   """
   defp ref(id), do: {:global, {:game, id}}
 
-  defp add_player(%__MODULE__{attacker: nil} = game, player), do: %{game | attacker: player}
-  defp add_player(%__MODULE__{defender: nil} = game, player), do: %{game | defender: player}
+  defp add_player(%__MODULE__{attacker: nil} = game, player_id), do: %{game | attacker: player_id}
+  defp add_player(%__MODULE__{defender: nil} = game, player_id), do: %{game | defender: player_id}
 
   defp add_channel(game, pid), do: %{game | channels: [pid | game.channels]}
 
   defp destroy_board(nil), do: :ok
-  defp destroy_board(player), do: Board.destroy(player.id)
+  defp destroy_board(player_id), do: Board.destroy(player_id)
 
   defp try_call(id, message) do
     case GenServer.whereis(ref(id)) do

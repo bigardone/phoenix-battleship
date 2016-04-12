@@ -15,20 +15,20 @@ class GameShowView extends React.Component {
   }
 
   _joinGame() {
-    const { dispatch, player, socket } = this.props;
+    const { dispatch, playerId, socket } = this.props;
     const gameId = this.props.params.id;
 
-    dispatch(joinGame(socket, player, gameId));
+    dispatch(joinGame(socket, playerId, gameId));
   }
 
   _opponentIsConnected() {
-    const { player, game } = this.props;
+    const { playerId, game } = this.props;
 
-    return player.id == game.attacker.id ? game.defender != null : game.attacker != null;
+    return playerId == game.attacker ? game.defender != null : game.attacker != null;
   }
 
   render() {
-    const { dispatch, game, gameChannel, selectedShip, player, currentTurn, messages } = this.props;
+    const { dispatch, game, gameChannel, selectedShip, playerId, currentTurn, messages } = this.props;
 
     if (!game) return false;
 
@@ -37,7 +37,7 @@ class GameShowView extends React.Component {
         <section id="main_section">
           <Header
             game={game}
-            player={player}
+            playerId={playerId}
             currentTurn={currentTurn} />
           <section id="boards_container">
             <div id="my_board_container">
@@ -62,7 +62,7 @@ class GameShowView extends React.Component {
                 dispatch={dispatch}
                 gameChannel={gameChannel}
                 data={game.opponents_board}
-                player={player}
+                playerId={playerId}
                 currentTurn={currentTurn}/>
             </div>
           </section>

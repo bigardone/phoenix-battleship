@@ -10,16 +10,16 @@ export default class Header extends React.Component {
   }
 
   _titleText() {
-    const { game, player, currentTurn } = this.props;
+    const { game, playerId, currentTurn } = this.props;
     const { my_board, opponents_board, readyForBattle } = game;
 
     if (!my_board.ready) {
       return 'Place your ships';
     } else if (!opponents_board || !opponents_board.ready) {
       return 'Waiting for opponent ';
-    } else if (currentTurn && currentTurn.id === player.id) {
+    } else if (currentTurn && currentTurn === playerId) {
       return 'Your turn!';
-    } else if (currentTurn && currentTurn.id != player.id) {
+    } else if (currentTurn && currentTurn != playerId) {
       return 'Your opponent\'s turn!';
     } else {
       return 'Let the battle begin';

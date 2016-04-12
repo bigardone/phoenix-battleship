@@ -6,9 +6,9 @@ defmodule Battleship.PlayerChannel do
   alias Battleship.Game.Supervisor, as: GameSupervisor
 
   def join("player:" <> player_id, _params, socket) do
-    player = socket.assigns.player
+    player = socket.assigns.player_id
 
-    if player.id == player_id do
+    if player == player_id do
       {:ok, socket}
     else
       {:error, %{reason: "Invalid player"}}

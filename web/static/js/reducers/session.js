@@ -1,27 +1,23 @@
 import { Socket } from 'phoenix';
 import Constants  from '../constants';
 
-const player = {
-  id: localStorage.getItem('playerId'),
-  name: localStorage.getItem('playerName'),
-};
+const playerId = localStorage.getItem('playerId');
 
 const socket = new Socket('/socket', {
   params: {
-    id: player.id,
-    name: player.name,
+    id: playerId,
   },
   logger: (kind, msg, data) => { console.log(`${kind}: ${msg}`, data); },
 });
 
 socket.connect();
 
-const channel = socket.channel(`player:${player.id}`);
+const channel = socket.channel(`player:${playerId}`);
 
 channel.join();
 
 const initialState = {
-  player: player,
+  playerId: playerId,
   socket: socket,
   userChannel: channel,
 };
@@ -31,7 +27,7 @@ export default function reducer(state = initialState, action = {}) {
     case Constants.SESSION_SET_PLAYER:
       return {
         ...state,
-        player: action.player,
+        playerId: action.player_id,
         socket: action.socket,
         userChannel: action.channel,
       };

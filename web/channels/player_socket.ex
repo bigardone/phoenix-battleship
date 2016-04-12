@@ -25,8 +25,8 @@ defmodule Battleship.PlayerSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(%{"id" => player_id, "name" => name}, socket) do
-    {:ok, assign(socket, :player, %Player{id: player_id, name: name})}
+  def connect(%{"id" => player_id}, socket) do
+    {:ok, assign(socket, :player_id, player_id)}
   end
   def connect(_, _socket), do: :error
 
@@ -40,5 +40,5 @@ defmodule Battleship.PlayerSocket do
   #     Battleship.Endpoint.broadcast("users_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(socket), do: "players_socket:#{socket.assigns.player.id}"
+  def id(socket), do: "players_socket:#{socket.assigns.player_id}"
 end

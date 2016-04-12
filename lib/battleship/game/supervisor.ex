@@ -3,7 +3,7 @@ defmodule Battleship.Game.Supervisor do
   Game processes supervisor
   """
   use Supervisor
-  alias Battleship.{Game, Player}
+  alias Battleship.{Game}
 
   @id_length Application.get_env(:battleship, :id_length)
 

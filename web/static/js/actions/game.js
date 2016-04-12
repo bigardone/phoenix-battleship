@@ -1,13 +1,13 @@
 import { push }   from 'react-router-redux';
 import Constants  from '../constants';
 
-export function joinGame(socket, player, gameId) {
+export function joinGame(socket, playerId, gameId) {
   return dispatch => {
     const channel = socket.channel(`game:${gameId}`);
 
     channel.join()
     .receive('ok', () => {
-      channel.push('game:get_data', { game_id: gameId, player_id: player.id })
+      channel.push('game:get_data', { game_id: gameId, player_id: playerId })
       .receive('ok', (payload) => {
         dispatch(setChannelAndGame(channel, payload.game));
       });
@@ -29,19 +29,19 @@ export function joinGame(socket, player, gameId) {
     channel.on('game:player_joined', (payload) => {
       dispatch({
         type: Constants.GAME_PLAYER_JOINED,
-        player: payload.player,
+        playerId: payload.player_id,
         board: payload.board,
       });
     });
 
-    channel.on(`game:player:${player.id}:opponents_board_changed`, (payload) => {
+    channel.on(`game:player:${playerId}:opponents_board_changed`, (payload) => {
       dispatch({
         type: Constants.GAME_OPPONENTS_BOARD_UPDATE,
         board: payload.board,
       });
     });
 
-    channel.on(`game:player:${player.id}:set_game`, (payload) => {
+    channel.on(`game:player:${playerId}:set_game`, (payload) => {
       dispatch(setGame(payload.game));
     });
   };
