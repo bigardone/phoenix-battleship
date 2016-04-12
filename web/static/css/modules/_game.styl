@@ -34,6 +34,7 @@
       overflow-y: auto
       padding: $small-spacing
       flex-direction: column
+      background-color: $light-gray
 
       header
         text-align: center
@@ -66,7 +67,7 @@
 
         > .cell
           flex: 1
-          border-color: rgba(#000, .2)
+          border-color: $dark-gray
           border-style: solid
           border-width: 1px 1px 0 0
           display: flex
@@ -74,10 +75,13 @@
           justify-content: center
 
           &:not(.header)
-            background: $blue
+            background: $light-blue
 
           &.ship
             background: $gray
+
+          &.hit
+            background: $red
 
           &:last-of-type
             border-right-width: 3px
@@ -116,7 +120,9 @@
           width: auto
           cursor: pointer
           display: inline-block
-          margin-right: $small-spacing
+
+          &:not(:last-of-type)
+            margin-right: $small-spacing * .6
 
           &.active
             .ship
@@ -142,6 +148,7 @@
     flex-direction: column
     padding: $small-spacing
     display: flex
+    border-left: 1px solid $gray
 
     .status
       display: inline-block
