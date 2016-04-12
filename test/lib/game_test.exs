@@ -3,7 +3,7 @@ defmodule Battleship.GameTest do
   use ExUnit.Case, async: true
   alias Battleship.Game.Supervisor, as: GameSupervisor
   alias Battleship.Game.Board
-  alias Battleship.{Game, Player}
+  alias Battleship.{Game, Player, Ship}
 
   @id 4 |> :crypto.strong_rand_bytes |> Base.encode64()
 
@@ -42,5 +42,28 @@ defmodule Battleship.GameTest do
 
     assert catch_exit(Agent.get({:global, {:board, 1}}, &(&1)))
     assert_receive {:DOWN, ^ref,  :process, ^pid, :normal}
+  end
+
+  test "updates rounds after a shot" do
+    valid_ships = [
+      %Ship{x: 0, y: 0, size: 5, orientation: :vertical},
+      %Ship{x: 1, y: 0, size: 4, orientation: :vertical},
+      %Ship{x: 2, y: 0, size: 3, orientation: :vertical},
+      %Ship{x: 3, y: 0, size: 2, orientation: :vertical},
+      %Ship{x: 4, y: 0, size: 1, orientation: :vertical}
+    ]
+
+    Game.join(@id, %Player{id: 1}, self)
+    Game.join(@id, %Player{id: 2}, self)
+
+    valid_ships
+    |> Enum.each(fn ship ->
+      Board.add_ship(1, ship)
+      Board.add_ship(2, ship)
+    end)
+
+    {:ok, game} = Game.player_shot(@id, 1, x: 0, y: 0)
+
+    assert [%{player_id: 1, x: 0, y: 0}] = game.rounds
   end
 end

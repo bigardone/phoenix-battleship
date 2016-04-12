@@ -30,6 +30,8 @@ defmodule Battleship.Game do
 
   def add_message(id, player_id, text), do: try_call(id, {:add_message, player_id, text})
 
+  def player_shot(id, player_id, x: x, y: y), do: try_call(id, {:player_shot, player_id, x: x, y: y})
+
   # SERVER
 
   def init(id), do: {:ok, %__MODULE__{id: id}}
@@ -77,6 +79,16 @@ defmodule Battleship.Game do
     game = %{game | messages: [message | game.messages]}
 
     {:reply, {:ok, message}, game}
+  end
+
+  def handle_call({:player_shot, player_id, x: x, y: y}, _from, game) do
+    opponent_id = get_opponents_id(game, player_id)
+
+    Board.take_shot(opponent_id, x: x, y: y)
+
+    game = %{game | rounds: [%{player_id: player_id, x: x, y: y}]}
+
+    {:reply, {:ok, game}, game}
   end
 
   def get_opponents_id(%Game{attacker: %Player{id: player_id}, defender: nil}, player_id), do: nil
