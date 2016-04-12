@@ -8,7 +8,27 @@ const initialState = {
     size: 0,
     orientation: Constants.SHIP_ORIENTATION_HORIZONTAL,
   },
+  readyForBattle: false,
+  currentTurn: null,
 };
+
+function readyForBattle(game) {
+  return game.my_board.ready && (game.opponents_board && game.opponents_board.ready);
+}
+
+function currentTurn(game) {
+  if (!readyForBattle(game)) return null;
+
+  const lastTurn = game.rounds[0];
+
+  console.log(lastTurn);
+
+  if (lastTurn == undefined) {
+    return game.attacker;
+  } else {
+    return [game.attacker, game.defender].find((player) => player.id != lastTurn.player_id);
+  }
+}
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
@@ -18,7 +38,13 @@ export default function reducer(state = initialState, action = {}) {
     case Constants.GAME_SET_GAME:
       var game = { ...state.game, ...action.game };
 
-      return { ...state, game: game, selectedShip: initialState.selectedShip };
+      return {
+        ...state,
+        game: game,
+        selectedShip: { ...state.selectedShip, name: null, size: 0 },
+        readyForBattle: readyForBattle(action.game),
+        currentTurn: currentTurn(action.game),
+      };
 
     case Constants.GAME_PLAYER_JOINED:
       var game = { ...state.game };
@@ -56,7 +82,12 @@ export default function reducer(state = initialState, action = {}) {
     case Constants.GAME_OPPONENTS_BOARD_UPDATE:
       var game = { ...state.game, opponents_board: action.board };
 
-      return { ...state, game: game };
+      return {
+        ...state,
+        game: game,
+        readyForBattle: readyForBattle(game),
+        currentTurn: currentTurn(game),
+      };
 
     default:
       return state;

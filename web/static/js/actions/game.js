@@ -40,6 +40,10 @@ export function joinGame(socket, player, gameId) {
         board: payload.board,
       });
     });
+
+    channel.on(`game:player:${player.id}:set_game`, (payload) => {
+      dispatch(setGame(payload.game));
+    });
   };
 }
 

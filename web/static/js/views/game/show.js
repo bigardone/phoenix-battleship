@@ -28,14 +28,17 @@ class GameShowView extends React.Component {
   }
 
   render() {
-    const { dispatch, game, gameChannel, selectedShip } = this.props;
+    const { dispatch, game, gameChannel, selectedShip, player, currentTurn } = this.props;
 
     if (!game) return false;
 
     return (
       <div id="game_show" className="view-container">
         <section id="main_section">
-          <Header game={game} />
+          <Header
+            game={game}
+            player={player}
+            currentTurn={currentTurn} />
           <section id="boards_container">
             <div id="my_board_container">
               <header>
@@ -58,7 +61,9 @@ class GameShowView extends React.Component {
               <OpponentBoard
                 dispatch={dispatch}
                 gameChannel={gameChannel}
-                data={game.opponents_board}/>
+                data={game.opponents_board}
+                player={player}
+                currentTurn={currentTurn}/>
             </div>
           </section>
         </section>

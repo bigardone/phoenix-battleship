@@ -15,7 +15,6 @@ export default class ShipSelector extends React.Component {
     const { dispatch, selectedShip, game } = this.props;
 
     const ships = game.my_board.ships.map((ship, i) => {
-      console.log(ship);
       if (Object.keys(ship.coordinates).length != 0) return false;
 
       const config = shipConfigurations.find((item) => item.size === ship.size);

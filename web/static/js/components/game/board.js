@@ -30,13 +30,14 @@ export default class Board extends React.Component {
     const classes = classnames({
       cell: true,
       ship: value === Constants.GRID_VALUE_SHIP,
+      hit: value === Constants.GRID_VALUE_SHIP_HIT,
     });
 
     return (
       <div
         className={classes}
         key={key}
-        onClick={onClick}></div>
+        onClick={onClick}>{::this._cellValue(value)}</div>
     );
   }
 

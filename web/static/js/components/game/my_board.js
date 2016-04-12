@@ -27,4 +27,8 @@ export default class MyBoard extends Board {
       .receive('error', (payload) => console.log(payload));
     };
   }
+
+  _cellValue(value) {
+    return false;
+  }
 }

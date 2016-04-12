@@ -6,7 +6,10 @@ import { setGame }        from '../../actions/game';
 
 export default class OpponentBoard extends Board {
   _cellOnClick(y, x, value) {
-    const { gameChannel, dispatch } = this.props;
+    const { gameChannel, currentTurn, player, dispatch } = this.props;
+
+    if (!currentTurn || currentTurn.id !== player.id) return false;
+
     const key = `${y}${x}`;
 
     return (e) => {
@@ -14,9 +17,13 @@ export default class OpponentBoard extends Board {
 
       gameChannel.push('game:shoot', { y: y, x: x })
       .receive('ok', (payload) => {
-        console.log(payload);
+        dispatch(setGame(payload.game));
       })
       .receive('error', (payload) => console.log(payload));
     };
+  }
+
+  _cellValue(value) {
+    return (value);
   }
 }
