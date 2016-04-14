@@ -14,7 +14,7 @@ const initialState = {
 };
 
 function readyForBattle(game) {
-  return game.my_board.ready && (game.opponents_board && game.opponents_board.ready);
+  return game.my_board.ready && (game.opponents_board != undefined && game.opponents_board.ready);
 }
 
 function currentTurn(game) {
@@ -43,8 +43,8 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         game: game,
         selectedShip: { ...state.selectedShip, name: null, size: 0 },
-        readyForBattle: readyForBattle(action.game),
-        currentTurn: currentTurn(action.game),
+        readyForBattle: readyForBattle(game),
+        currentTurn: currentTurn(game),
       };
 
     case Constants.GAME_PLAYER_JOINED:

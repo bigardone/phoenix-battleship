@@ -27,6 +27,26 @@ class GameShowView extends React.Component {
     return playerId == game.attacker ? game.defender != null : game.attacker != null;
   }
 
+  _renderOpponentBoard() {
+    const { dispatch, game, gameChannel, playerId, currentTurn, readyForBattle } = this.props;
+
+    if (!readyForBattle) return false;
+
+    return (
+      <div id="opponents_board_container">
+        <header>
+          <h2>Shooting grid</h2>
+        </header>
+        <OpponentBoard
+          dispatch={dispatch}
+          gameChannel={gameChannel}
+          data={game.opponents_board}
+          playerId={playerId}
+          currentTurn={currentTurn}/>
+      </div>
+    );
+  }
+
   render() {
     const { dispatch, game, gameChannel, selectedShip, playerId, currentTurn, messages } = this.props;
 
@@ -44,34 +64,25 @@ class GameShowView extends React.Component {
               <header>
                 <h2>Your ships</h2>
               </header>
+              <ShipSelector
+                dispatch={dispatch}
+                game={game}
+                selectedShip={selectedShip} />
               <MyBoard
                 dispatch={dispatch}
                 gameChannel={gameChannel}
                 selectedShip={selectedShip}
                 data={game.my_board}/>
-              <ShipSelector
-                dispatch={dispatch}
-                game={game}
-                selectedShip={selectedShip} />
             </div>
-            <div id="opponents_board_container">
-              <header>
-                <h2>Shooting grid</h2>
-              </header>
-              <OpponentBoard
-                dispatch={dispatch}
-                gameChannel={gameChannel}
-                data={game.opponents_board}
-                playerId={playerId}
-                currentTurn={currentTurn}/>
-            </div>
+            {::this._renderOpponentBoard()}
           </section>
         </section>
         <Chat
           dispatch={dispatch}
           opponentIsConnected={::this._opponentIsConnected()}
           gameChannel={gameChannel}
-          messages={messages}/>
+          messages={messages}
+          playerId={playerId}/>
       </div>
     );
   }
