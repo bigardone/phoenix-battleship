@@ -9,9 +9,9 @@ defmodule Battleship.Game.Board do
   @size 10
   @orientations [:horizontal, :vertical]
 
-  @grid_value_watter "·"
+  @grid_value_water "·"
   @grid_value_ship "/"
-  @grid_value_watter_hit "O"
+  @grid_value_water_hit "O"
   @grid_value_ship_hit "*"
 
   defstruct [
@@ -156,7 +156,7 @@ defmodule Battleship.Game.Board do
     0..@size - 1
     |> Enum.reduce([], &build_rows/2)
     |> List.flatten
-    |> Enum.reduce(%{}, fn item, acc -> Map.put(acc, item, @grid_value_watter) end)
+    |> Enum.reduce(%{}, fn item, acc -> Map.put(acc, item, @grid_value_water) end)
   end
 
   defp build_rows(y, rows) do
@@ -167,7 +167,7 @@ defmodule Battleship.Game.Board do
   end
 
   defp shot_result(current_value) when current_value == @grid_value_ship, do: @grid_value_ship_hit
-  defp shot_result(_current_value), do: @grid_value_watter_hit
+  defp shot_result(_current_value), do: @grid_value_water_hit
 
   defp add_result_to_board(result, player_id, coords) do
     Agent.update(ref(player_id), &(put_in(&1.grid[coords], result)))
@@ -191,7 +191,7 @@ defmodule Battleship.Game.Board do
 
   defp set_hit_points(board), do: %{board | hit_points: Enum.reduce(board.ships, 0, &(&1.size + &2))}
 
-  defp opponent_grid_value(@grid_value_ship), do: @grid_value_watter
+  defp opponent_grid_value(@grid_value_ship), do: @grid_value_water
   defp opponent_grid_value(value), do: value
 
   defp ship_placed?(ship), do: length(Map.keys(ship.coordinates)) != 0

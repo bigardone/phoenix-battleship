@@ -64,7 +64,8 @@ export default class ShipSelector extends React.Component {
       <div id="ship_selector">
         <p>
           Select a ship by clicking on it. Click on it again to switch orientation.
-          The current orientation is: <span className="orientation">{selectedShip.orientation}</span></p>
+          The current orientation is: <br/>
+          <span className="orientation">{selectedShip.orientation}</span></p>
         {::this._renderAvailableShips()}
       </div>
     );

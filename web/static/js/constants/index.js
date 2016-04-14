@@ -18,8 +18,8 @@ export default {
   SHIP_ORIENTATION_VERTICAL: 'vertical',
 
   // Boards
-  GRID_VALUE_WATTER: '·',
+  GRID_VALUE_WATER: '·',
   GRID_VALUE_SHIP: '/',
-  GRID_VALUE_WATTER_HIT: 'O',
+  GRID_VALUE_WATER_HIT: 'O',
   GRID_VALUE_SHIP_HIT: '*',
 };

@@ -13,7 +13,7 @@ export default class OpponentBoard extends Board {
     const key = `${y}${x}`;
 
     return (e) => {
-      if (value != Constants.GRID_VALUE_WATTER) return false;
+      if (value != Constants.GRID_VALUE_WATER) return false;
 
       gameChannel.push('game:shoot', { y: y, x: x })
       .receive('ok', (payload) => {
@@ -25,5 +25,14 @@ export default class OpponentBoard extends Board {
 
   _cellValue(value) {
     return (value);
+  }
+
+  _boardClasses() {
+    const { playerId, currentTurn } = this.props;
+
+    return classnames({
+      grid: true,
+      pointer: playerId === currentTurn,
+    });
   }
 }

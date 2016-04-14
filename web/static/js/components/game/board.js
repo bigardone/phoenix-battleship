@@ -31,6 +31,7 @@ export default class Board extends React.Component {
       cell: true,
       ship: value === Constants.GRID_VALUE_SHIP,
       hit: value === Constants.GRID_VALUE_SHIP_HIT,
+      'water-hit': value === Constants.GRID_VALUE_WATER_HIT,
     });
 
     return (
@@ -56,14 +57,11 @@ export default class Board extends React.Component {
   }
 
   render() {
-    const { data, selectedShip } = this.props;
+    const { data } = this.props;
 
     if (!data) return false;
 
-    const classes = classnames({
-      grid: true,
-      pointer: selectedShip && selectedShip.name != null,
-    });
+    const classes = this._boardClasses();
 
     return (
       <div className={classes}>

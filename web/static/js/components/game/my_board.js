@@ -11,7 +11,7 @@ export default class MyBoard extends Board {
 
     return (e) => {
       if (selectedShip.name === null) return false;
-      if (value != Constants.GRID_VALUE_WATTER) return false;
+      if (value != Constants.GRID_VALUE_WATER) return false;
 
       const ship = {
         x: x,
@@ -30,5 +30,14 @@ export default class MyBoard extends Board {
 
   _cellValue(value) {
     return false;
+  }
+
+  _boardClasses() {
+    const { selectedShip } = this.props;
+
+    return classnames({
+      grid: true,
+      pointer: selectedShip && selectedShip.name != null,
+    });
   }
 }
