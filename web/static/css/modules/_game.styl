@@ -5,15 +5,17 @@
   height: 100vh
   flex-direction: row
   flex-wrap: wrap
+  background: $light-gray
 
   #main_section
     flex: 3
     display: flex
     flex-direction: column
+    padding: $base-spacing
 
   #game_header
-    background: $gray
-    padding: $base-spacing*1.5 $small-spacing
+    background: $light-gray
+    padding: $base-spacing
     text-align: center
 
     h1
@@ -30,21 +32,17 @@
 
     #opponents_board_container
       flex: 1
-      display: flex
       overflow-y: auto
-      padding: $small-spacing
       flex-direction: column
-      background-color: $light-gray
 
       header
         text-align: center
 
     #my_board_container
       flex: 1
-      background-color: $light-gray
       overflow-y: auto
-      padding: $small-spacing
       flex-direction: column
+      max-width: 50%
 
       header
         text-align: center
@@ -82,6 +80,8 @@
 
           &.hit
             background: $red
+          &.water-hit
+            background: $blue
 
           &:last-of-type
             border-right-width: 3px
@@ -104,6 +104,11 @@
 
     #ship_selector
       padding: $small-spacing
+      text-align: center
+      background: rgba(#fff, .5)
+      margin-bottom: $base-spacing
+      border-radius: $base-border-radius
+
 
       .orientation
         text-transform: uppercase
@@ -116,7 +121,7 @@
         margin: 0
 
         li
-          margin-bottom: 1em
+          margin-bottom: $small-spacing
           width: auto
           cursor: pointer
           display: inline-block
@@ -127,7 +132,11 @@
           &.active
             .ship
               span
-                background-color: rgba($blue, .5)
+                background-color: rgba($green, .5)
+
+                &:not(:last-of-type)
+                  border-right: 1px solid $green
+
 
           .ship
             > span
@@ -177,6 +186,22 @@
 
         li
           padding: 0 $base-spacing
+          margin-bottom: ($small-spacing / 2)
+
+          span
+            display: inline-block
+            background: rgba($light-blue, .5)
+            border-radius: $base-border-radius
+            padding: ($small-spacing / 2)
+            max-width: 75%
+            text-align: left
+
+          &.mine
+            text-align: right
+
+            span
+              background: rgba($light-green, .5)
+
 
     .form-container
       padding-top: $small-spacing

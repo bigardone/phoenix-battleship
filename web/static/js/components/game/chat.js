@@ -2,6 +2,11 @@ import React, {PropTypes} from 'react';
 import classnames         from 'classnames';
 
 export default class Chat extends React.Component {
+  componentDidUpdate() {
+    const { messages } = this.refs;
+    messages.scrollTop = messages.scrollHeight;
+  }
+
   _handleFormSubmit(e) {
     e.preventDefault();
   }
@@ -22,16 +27,22 @@ export default class Chat extends React.Component {
   }
 
   _renderMessages() {
-    const { messages } = this.props;
+    const { messages, playerId } = this.props;
 
     const nodes = messages.map((message, i) => {
+      const classes = classnames({
+        mine: message.player_id === playerId,
+      });
+
       return (
-        <li key={i}><strong>{message.player_id}</strong>: {message.text}</li>
+        <li className={classes} key={i}>
+          <span>{message.text}</span>
+        </li>
       );
     });
 
     return (
-      <ul>{nodes}</ul>
+      <ul ref="messages">{nodes}</ul>
     );
   }
 
