@@ -4,8 +4,6 @@ import { setPlayer }  from './session';
 
 export function newGame(channel) {
   return dispatch => {
-    // dispatch(setPlayer(player, socket, channel));
-
     channel.push('game:new')
     .receive('ok', (payload) => {
       dispatch(push(`/game/${payload.game_id}`));

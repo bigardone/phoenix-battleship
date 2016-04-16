@@ -44,6 +44,13 @@ export function joinGame(socket, playerId, gameId) {
     channel.on(`game:player:${playerId}:set_game`, (payload) => {
       dispatch(setGame(payload.game));
     });
+
+    channel.on(`game:opponent_left`, (payload) => {
+      dispatch({
+        type: Constants.GAME_OPPONENT_LEFT,
+        winnerId: playerId,
+      });
+    });
   };
 }
 

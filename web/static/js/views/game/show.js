@@ -18,7 +18,7 @@ class GameShowView extends React.Component {
   componentWillUnmount() {
     const { dispatch, gameChannel } = this.props;
 
-    gameChannel.leave();
+    if (gameChannel != null) gameChannel.leave();
 
     dispatch(resetGame());
   }
@@ -56,10 +56,8 @@ class GameShowView extends React.Component {
     );
   }
 
-  render() {
+  _renderGame() {
     const { dispatch, game, gameChannel, selectedShip, playerId, currentTurn, messages } = this.props;
-
-    if (!game) return false;
 
     return (
       <div id="game_show" className="view-container">
@@ -94,6 +92,34 @@ class GameShowView extends React.Component {
           playerId={playerId}/>
       </div>
     );
+  }
+
+  _renderResultMessage() {
+    const { playerId, winnerId } = this.props;
+
+    if (playerId === winnerId) return 'Victory is yours!';
+    else return 'You lose, get wrecked!';
+  }
+
+  _renderResult() {
+    const { winnerId } = this.props;
+
+    return (
+      <div id="game_result" className="view-container">
+        <header>
+          <h1>Game over!</h1>
+          <h2>{::this._renderResultMessage()}</h2>
+        </header>
+      </div>
+    );
+  }
+
+  render() {
+    const { game, gameOver } = this.props;
+
+    if (!game) return false;
+    else if (!gameOver) return this._renderGame();
+    else return this._renderResult();
   }
 }
 

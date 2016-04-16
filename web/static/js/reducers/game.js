@@ -10,6 +10,8 @@ const initialState = {
   },
   messages: [],
   readyForBattle: false,
+  gameOver: false,
+  winnerId: null,
   currentTurn: null,
 };
 
@@ -87,6 +89,9 @@ export default function reducer(state = initialState, action = {}) {
         readyForBattle: readyForBattle(game),
         currentTurn: currentTurn(game),
       };
+
+    case Constants.GAME_OPPONENT_LEFT:
+      return { ...state, gameOver: true, winnerId: action.winnerId };
 
     case Constants.GAME_RESET:
       return { ...initialState };
