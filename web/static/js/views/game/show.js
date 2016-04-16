@@ -2,6 +2,7 @@ import React, { PropTypes }   from 'react';
 import { Socket }             from 'phoenix';
 import { connect }            from 'react-redux';
 import { joinGame }           from '../../actions/game';
+import { resetGame }          from '../../actions/game';
 import ShipSelector           from '../../components/game/ship_selector';
 import Board                  from '../../components/game/board';
 import MyBoard                from '../../components/game/my_board';
@@ -12,6 +13,14 @@ import Header                 from '../../components/game/header';
 class GameShowView extends React.Component {
   componentDidMount() {
     this._joinGame();
+  }
+
+  componentWillUnmount() {
+    const { dispatch, gameChannel } = this.props;
+
+    gameChannel.leave();
+
+    dispatch(resetGame());
   }
 
   _joinGame() {

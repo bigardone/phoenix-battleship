@@ -71,3 +71,7 @@ export function selectShip(ship) {
     ship: ship,
   };
 }
+
+export function resetGame() {
+  return { type: Constants.GAME_RESET };
+}

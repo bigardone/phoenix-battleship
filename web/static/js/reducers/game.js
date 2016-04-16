@@ -88,6 +88,9 @@ export default function reducer(state = initialState, action = {}) {
         currentTurn: currentTurn(game),
       };
 
+    case Constants.GAME_RESET:
+      return { ...initialState };
+
     default:
       return state;
   }
