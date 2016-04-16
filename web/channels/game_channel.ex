@@ -94,4 +94,9 @@ defmodule Battleship.GameChannel do
 
     {:reply, {:ok, %{game: Game.get_data(game_id, player_id)}}, socket}
   end
+
+  def terminate(reason, _socket) do
+    Logger.debug"Terminating GameChannel #{inspect reason}"
+    :ok
+  end
 end

@@ -45,6 +45,8 @@ defmodule Battleship.Game do
         {:reply, {:ok, self}, game}
       true ->
         Process.monitor(pid)
+        Process.flag(:trap_exit, true)
+
         create_board(player_id)
 
         game = game
@@ -87,6 +89,16 @@ defmodule Battleship.Game do
   def get_opponents_id(%Game{attacker: attacker, defender: player_id}, player_id), do: attacker
 
   def handle_info({:DOWN, _ref, :process, _pid, _reason}, game) do
+    Logger.debug "Handling DOWN message in Game server"
+
+    for player <- [game.attacker, game.defender], do: destroy_board(player)
+
+    {:stop, :normal, game}
+  end
+
+  def handle_info({:EXIT, _pid, {:shutdown, :closed}}, game) do
+    Logger.debug "Handling EXIT message in Game server"
+
     for player <- [game.attacker, game.defender], do: destroy_board(player)
 
     {:stop, :normal, game}
