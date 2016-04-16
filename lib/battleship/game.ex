@@ -88,20 +88,16 @@ defmodule Battleship.Game do
   def get_opponents_id(%Game{attacker: player_id, defender: defender}, player_id), do: defender
   def get_opponents_id(%Game{attacker: attacker, defender: player_id}, player_id), do: attacker
 
-  def handle_info({:DOWN, _ref, :process, _pid, _reason}, game) do
-    Logger.debug "Handling DOWN message in Game server"
+  @doc """
+  Handles exit messages from linked game channels processes, destroying boards and
+  sopping the game process.
+  - {:DOWN, _ref, :process, _pid, _reason}
+  - {:EXIT, _pid, {:shutdown, :closed}}
+  """
+  def handle_info(message, game) do
+    Logger.debug "Handling message #{inspect message} in Game server"
 
-    for player <- [game.attacker, game.defender], do: destroy_board(player)
-
-    {:stop, :normal, game}
-  end
-
-  def handle_info({:EXIT, _pid, {:shutdown, :closed}}, game) do
-    Logger.debug "Handling EXIT message in Game server"
-
-    for player <- [game.attacker, game.defender], do: destroy_board(player)
-
-    {:stop, :normal, game}
+    stop(game)
   end
 
   @doc """
@@ -121,6 +117,12 @@ defmodule Battleship.Game do
 
   defp destroy_board(nil), do: :ok
   defp destroy_board(player_id), do: Board.destroy(player_id)
+
+  defp stop(game) do
+    for player <- [game.attacker, game.defender], do: destroy_board(player)
+
+    {:stop, :normal, game}
+  end
 
   defp try_call(id, message) do
     case GenServer.whereis(ref(id)) do
