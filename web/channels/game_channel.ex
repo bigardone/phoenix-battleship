@@ -44,8 +44,6 @@ defmodule Battleship.GameChannel do
     Logger.debug "Handling send_message on GameChannel"
 
     player_id = socket.assigns.player_id
-    game_id = socket.assigns.game_id
-
     message = %{player_id: player_id, text: text}
 
     broadcast! socket, "game:message_sent", %{message: message}
