@@ -5,19 +5,15 @@ defmodule Battleship.GameTest do
   alias Battleship.Game.Board
   alias Battleship.{Game, Ship}
 
-  @id 4 |> :crypto.strong_rand_bytes |> Base.encode64()
-
-  setup_all do
-    {:ok, pid} = GameSupervisor.create_game(@id)
-
-    {:ok, pid: pid}
-  end
+  @id 8 |> :crypto.strong_rand_bytes |> Base.encode64()
 
   test "joining a game which does not exist" do
     assert {:error, "Game does not exist"} = Game.join("wrong-id", 1, self)
   end
 
-  test "joining a game", %{pid: pid} do
+  test "joining a game" do
+    {:ok, pid} = GameSupervisor.create_game(@id)
+
     assert {:ok, ^pid} = Game.join(@id, 1, self)
     assert {:ok, ^pid} = Game.join(@id, 1, self)
     assert {:ok, ^pid} = Game.join(@id, 2, self)
@@ -45,6 +41,8 @@ defmodule Battleship.GameTest do
   end
 
   test "updates rounds after a shot" do
+    GameSupervisor.create_game(@id)
+
     valid_ships = [
       %Ship{x: 0, y: 0, size: 5, orientation: :vertical},
       %Ship{x: 1, y: 0, size: 4, orientation: :vertical},

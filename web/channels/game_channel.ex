@@ -14,7 +14,7 @@ defmodule Battleship.GameChannel do
 
     case Game.join(game_id, player_id, socket.channel_pid) do
       {:ok, pid} ->
-        # Process.link(pid)
+        Process.link(pid)
 
         {:ok, assign(socket, :game_id, game_id)}
       {:error, reason} ->
@@ -86,6 +86,7 @@ defmodule Battleship.GameChannel do
 
     player_id = socket.assigns.player_id
     game_id = socket.assigns.game_id
+
     {:ok, game} = Game.player_shot(game_id, player_id, x: x, y: y)
     opponent_id = Game.get_opponents_id(game, player_id)
 

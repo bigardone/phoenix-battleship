@@ -86,11 +86,11 @@ defmodule Battleship.Game do
   def get_opponents_id(%Game{attacker: player_id, defender: defender}, player_id), do: defender
   def get_opponents_id(%Game{attacker: attacker, defender: player_id}, player_id), do: attacker
 
-  # def handle_info({:DOWN, _ref, :process, _pid, _reason}, game) do
-  #   for player <- [game.attacker, game.defender], do: destroy_board(player)
-  #
-  #   {:stop, :normal, game}
-  # end
+  def handle_info({:DOWN, _ref, :process, _pid, _reason}, game) do
+    for player <- [game.attacker, game.defender], do: destroy_board(player)
+
+    {:stop, :normal, game}
+  end
 
   @doc """
   Creates a new Board for a given Player
