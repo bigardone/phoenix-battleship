@@ -24,7 +24,7 @@ export default class OpponentBoard extends Board {
   }
 
   _cellValue(value) {
-    return (value);
+    return '';
   }
 
   _boardClasses() {
@@ -33,6 +33,14 @@ export default class OpponentBoard extends Board {
     return classnames({
       grid: true,
       pointer: playerId === currentTurn,
+    });
+  }
+
+  _cellClasses(value) {
+    return classnames({
+      cell: true,
+      hit: value === Constants.GRID_VALUE_SHIP_HIT,
+      'water-hit': value === Constants.GRID_VALUE_WATER_HIT,
     });
   }
 }

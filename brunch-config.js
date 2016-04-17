@@ -58,6 +58,7 @@ exports.config = {
 
     stylus: {
       plugins: [
+        'nib',
       ],
 
       linenos: true,

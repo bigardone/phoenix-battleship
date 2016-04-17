@@ -40,4 +40,13 @@ export default class MyBoard extends Board {
       pointer: selectedShip && selectedShip.name != null,
     });
   }
+
+  _cellClasses(value) {
+    return classnames({
+      cell: true,
+      ship: value === Constants.GRID_VALUE_SHIP,
+      'ship-hit': value === Constants.GRID_VALUE_SHIP_HIT,
+      'water-hit': value === Constants.GRID_VALUE_WATER_HIT,
+    });
+  }
 }
