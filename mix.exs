@@ -34,7 +34,7 @@ defmodule Battleship.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
-      {:ex_guard, "~> 0.10.0", only: :dev},
+      {:ex_guard, "~> 1.0.0", only: :dev},
       {:credo, "~> 0.3", only: [:dev, :test]}
     ]
   end
