@@ -13,7 +13,8 @@ defmodule Battleship.Game do
     defender: nil,
     channels: [],
     rounds: [],
-    over: false
+    over: false,
+    winner: nil
   ]
 
   # API
@@ -79,7 +80,9 @@ defmodule Battleship.Game do
 
     Board.take_shot(opponent_id, x: x, y: y)
 
-    game = %{game | rounds: [%{player_id: player_id, x: x, y: y}]}
+    game = game
+    |> udpate_rounds(player_id, x: x, y: y)
+    |> update_winner
 
     {:reply, {:ok, game}, game}
   end
@@ -122,6 +125,24 @@ defmodule Battleship.Game do
     for player <- [game.attacker, game.defender], do: destroy_board(player)
 
     {:stop, :normal, game}
+  end
+
+  defp udpate_rounds(game, player_id, x: x, y: y) do
+    %{game | rounds: [%{player_id: player_id, x: x, y: y} | game.rounds]}
+  end
+
+  defp update_winner(game) do
+    attacker_board = Board.get_data(game.attacker)
+    defender_board = Board.get_data(game.defender)
+
+    cond do
+      attacker_board.hit_points == 0 ->
+        %{game | winner: game.defender, over: true}
+      defender_board.hit_points == 0 ->
+        %{game | winner: game.attacker, over: true}
+      true ->
+        game
+    end
   end
 
   defp try_call(id, message) do

@@ -64,8 +64,6 @@ defmodule Battleship.GameChannel do
       orientation: String.to_atom(ship["orientation"])
     }
 
-    Logger.debug "#{inspect ship}"
-
     case Board.add_ship(player_id, ship) do
       {:ok, _} ->
         game = Game.get_data(game_id, player_id)
@@ -85,12 +83,20 @@ defmodule Battleship.GameChannel do
     player_id = socket.assigns.player_id
     game_id = socket.assigns.game_id
 
-    {:ok, game} = Game.player_shot(game_id, player_id, x: x, y: y)
+    game = Game.get_data(game_id)
     opponent_id = Game.get_opponents_id(game, player_id)
 
-    broadcast(socket, "game:player:#{opponent_id}:set_game", %{game: Game.get_data(game_id, opponent_id)})
-
-    {:reply, {:ok, %{game: Game.get_data(game_id, player_id)}}, socket}
+    case Game.player_shot(game_id, player_id, x: x, y: y) do
+      {:ok, %Game{over: true} = game} ->
+        game = Map.delete(game, :channels)
+        broadcast(socket, "game:over", %{game: game})
+        {:noreply, socket}
+      {:ok, _game} ->
+        broadcast(socket, "game:player:#{opponent_id}:set_game", %{game: Game.get_data(game_id, opponent_id)})
+        {:reply, {:ok, %{game: Game.get_data(game_id, player_id)}}, socket}
+      _ ->
+        {:error, {:error, %{reason: "Something went wrong while shooting"}}, socket}
+    end
   end
 
   def terminate(reason, socket) do
