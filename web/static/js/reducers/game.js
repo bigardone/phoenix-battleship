@@ -90,7 +90,7 @@ export default function reducer(state = initialState, action = {}) {
         currentTurn: currentTurn(game),
       };
 
-    case Constants.GAME_OPPONENT_LEFT:
+    case Constants.GAME_OVER:
       return { ...state, gameOver: true, winnerId: action.winnerId };
 
     case Constants.GAME_RESET:
