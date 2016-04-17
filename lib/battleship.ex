@@ -1,6 +1,8 @@
 defmodule Battleship do
   use Application
 
+  @id_length Application.get_env(:battleship, :id_length)
+
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
   def start(_type, _args) do
@@ -25,5 +27,15 @@ defmodule Battleship do
   def config_change(changed, _new, removed) do
     Battleship.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  @doc """
+  Generates unique id for the game
+  """
+  def generate_id do
+    @id_length
+    |> :crypto.strong_rand_bytes
+    |> Base.url_encode64()
+    |> binary_part(0, @id_length)
   end
 end

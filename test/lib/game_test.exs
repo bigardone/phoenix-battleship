@@ -5,43 +5,49 @@ defmodule Battleship.GameTest do
   alias Battleship.Game.Board
   alias Battleship.{Game, Ship}
 
-  @id 8 |> :crypto.strong_rand_bytes |> Base.encode64()
+  setup do
+    id =  Battleship.generate_id
+    attacker_id = Battleship.generate_id
+    defender_id = Battleship.generate_id
+
+    {:ok, id: id, attacker_id: attacker_id, defender_id: defender_id}
+  end
 
   test "joining a game which does not exist" do
     assert {:error, "Game does not exist"} = Game.join("wrong-id", 1, self)
   end
 
-  test "joining a game" do
-    {:ok, pid} = GameSupervisor.create_game(@id)
+  test "joining a game", %{id: id, attacker_id: attacker_id, defender_id: defender_id} do
+    {:ok, pid} = GameSupervisor.create_game(id)
 
-    assert {:ok, ^pid} = Game.join(@id, 1, self)
-    assert {:ok, ^pid} = Game.join(@id, 1, self)
-    assert {:ok, ^pid} = Game.join(@id, 2, self)
-    assert {:error, "No more players allowed"} = Game.join(@id, 1, self)
+    assert {:ok, ^pid} = Game.join(id, attacker_id, self)
+    assert {:ok, ^pid} = Game.join(id, attacker_id, self)
+    assert {:ok, ^pid} = Game.join(id, defender_id, self)
+    assert {:error, "No more players allowed"} = Game.join(id, attacker_id, self)
 
-    game = Game.get_data(@id)
-    assert 1 = game.attacker
-    assert 2 = game.defender
+    game = Game.get_data(id)
+    assert ^attacker_id = game.attacker
+    assert ^defender_id = game.defender
 
-    assert %Board{player_id: 1} = Agent.get({:global, {:board, 1}}, &(&1))
-    assert %Board{player_id: 2} = Agent.get({:global, {:board, 2}}, &(&1))
+    assert %Board{player_id: ^attacker_id} = Agent.get({:global, {:board, attacker_id}}, &(&1))
+    assert %Board{player_id: ^defender_id} = Agent.get({:global, {:board, defender_id}}, &(&1))
   end
 
-  test "closes game when player goes down" do
+  test "closes game when player goes down", %{attacker_id: attacker_id} do
     {:ok, pid} = GameSupervisor.create_game("new-game")
 
     ref = Process.monitor(pid)
 
     spawn fn ->
-      Game.join("new-game", 2, self)
+      Game.join("new-game", attacker_id, self)
     end
 
     assert catch_exit(Agent.get({:global, {:board, 1}}, &(&1)))
     assert_receive {:DOWN, ^ref,  :process, ^pid, :normal}
   end
 
-  test "updates rounds after a shot" do
-    GameSupervisor.create_game(@id)
+  test "updates rounds after a shot", %{id: id, attacker_id: attacker_id, defender_id: defender_id} do
+    GameSupervisor.create_game(id)
 
     valid_ships = [
       %Ship{x: 0, y: 0, size: 5, orientation: :vertical},
@@ -51,17 +57,17 @@ defmodule Battleship.GameTest do
       %Ship{x: 4, y: 0, size: 1, orientation: :vertical}
     ]
 
-    Game.join(@id, 1, self)
-    Game.join(@id, 2, self)
+    Game.join(id, attacker_id, self)
+    Game.join(id, defender_id, self)
 
     valid_ships
     |> Enum.each(fn ship ->
-      Board.add_ship(1, ship)
-      Board.add_ship(2, ship)
+      Board.add_ship(attacker_id, ship)
+      Board.add_ship(defender_id, ship)
     end)
 
-    {:ok, game} = Game.player_shot(@id, 1, x: 0, y: 0)
+    {:ok, game} = Game.player_shot(id, attacker_id, x: 0, y: 0)
 
-    assert [%{player_id: 1, x: 0, y: 0}] = game.rounds
+    assert [%{player_id: ^attacker_id, x: 0, y: 0}] = game.rounds
   end
 end

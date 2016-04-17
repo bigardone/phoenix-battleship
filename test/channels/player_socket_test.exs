@@ -3,11 +3,10 @@ defmodule Battleship.PlayerSocketTest do
 
   alias Battleship.{PlayerSocket}
 
-  @id 4 |> :crypto.strong_rand_bytes |> Base.encode64()
-  @name "John"
+  @id Battleship.generate_id
 
   setup do
-    {:ok, socket} = connect(PlayerSocket, %{"id" => @id, "name" => @name})
+    {:ok, socket} = connect(PlayerSocket, %{"id" => @id})
 
     {:ok, socket: socket}
   end

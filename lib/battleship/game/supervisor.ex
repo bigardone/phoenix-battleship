@@ -5,8 +5,6 @@ defmodule Battleship.Game.Supervisor do
   use Supervisor
   alias Battleship.{Game}
 
-  @id_length Application.get_env(:battleship, :id_length)
-
   def start_link, do: Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
 
   def init(:ok) do
@@ -21,14 +19,4 @@ defmodule Battleship.Game.Supervisor do
   Creates a new supervised Game process
   """
   def create_game(id), do: Supervisor.start_child(__MODULE__, [id])
-
-  @doc """
-  Generates unique id for the game
-  """
-  def generate_id do
-    @id_length
-    |> :crypto.strong_rand_bytes
-    |> Base.url_encode64()
-    |> binary_part(0, @id_length)
-  end
 end

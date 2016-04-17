@@ -16,7 +16,7 @@ defmodule Battleship.PlayerChannel do
   end
 
   def handle_in("game:new", _params, socket) do
-    game_id = GameSupervisor.generate_id
+    game_id = Battleship.generate_id
 
     GameSupervisor.create_game(game_id)
 
