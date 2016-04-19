@@ -5,7 +5,7 @@ import Constants          from '../../constants';
 import { setGame }        from '../../actions/game';
 
 export default class OpponentBoard extends Board {
-  _cellOnClick(y, x, value) {
+  _handleCellClick(y, x, value) {
     const { gameChannel, currentTurn, playerId, dispatch } = this.props;
 
     if (currentTurn !== playerId) return false;
@@ -21,6 +21,10 @@ export default class OpponentBoard extends Board {
       })
       .receive('error', (payload) => console.log(payload));
     };
+  }
+
+  _handleCellMouseOver(y, x) {
+    return false;
   }
 
   _cellValue(value) {
@@ -42,5 +46,9 @@ export default class OpponentBoard extends Board {
       hit: value === Constants.GRID_VALUE_SHIP_HIT,
       'water-hit': value === Constants.GRID_VALUE_WATER_HIT,
     });
+  }
+
+  _cellId(ref) {
+    return false;
   }
 }
