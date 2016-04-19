@@ -13,6 +13,7 @@ const initialState = {
   gameOver: false,
   winnerId: null,
   currentTurn: null,
+  error: null,
 };
 
 function readyForBattle(game) {
@@ -47,6 +48,7 @@ export default function reducer(state = initialState, action = {}) {
         selectedShip: { ...state.selectedShip, name: null, size: 0 },
         readyForBattle: readyForBattle(game),
         currentTurn: currentTurn(game),
+        error: null,
       };
 
     case Constants.GAME_PLAYER_JOINED:
@@ -78,7 +80,7 @@ export default function reducer(state = initialState, action = {}) {
 
       const ship = { ...state.selectedShip, ...action.ship, orientation: orientation };
 
-      return { ...state, selectedShip: ship };
+      return { ...state, selectedShip: ship, error: null };
 
     case Constants.GAME_OPPONENTS_BOARD_UPDATE:
       var game = { ...state.game, opponents_board: action.board };
@@ -92,6 +94,9 @@ export default function reducer(state = initialState, action = {}) {
 
     case Constants.GAME_OVER:
       return { ...state, gameOver: true, winnerId: action.winnerId };
+
+    case Constants.GAME_ERROR:
+      return { ...state, error: action.error };
 
     case Constants.GAME_RESET:
       return { ...initialState };

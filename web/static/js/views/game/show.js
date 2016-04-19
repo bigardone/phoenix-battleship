@@ -39,7 +39,7 @@ class GameShowView extends React.Component {
   _renderOpponentBoard() {
     const { dispatch, game, gameChannel, playerId, currentTurn, readyForBattle } = this.props;
 
-    if (!readyForBattle) return false;
+    if (!readyForBattle) return this._renderInstructions();
 
     return (
       <div id="opponents_board_container">
@@ -53,6 +53,49 @@ class GameShowView extends React.Component {
           playerId={playerId}
           currentTurn={currentTurn}/>
       </div>
+    );
+  }
+
+  _renderInstructions() {
+    const { readyForBattle } = this.props;
+
+    if (readyForBattle) return false;
+
+    const url = document.URL;
+    const handleGameLinkClick = (e) => {
+      e.preventDefault();
+      const link = e.target;
+      link.select();
+      document.execCommand('copy');
+    };
+
+    return (
+      <div id="opponents_board_container">
+        <header>
+          <h2>Instructions</h2>
+        </header>
+        <ol className="instructions">
+          <li>Copy this link <input onClick={handleGameLinkClick} defaultValue={url} readOnly={true}/>
+            by clicking on it and share it with your opponent.                                                            </li>
+          <li>To place a ship in your board select one by clicking on the gray boxes.</li>
+          <li>The selected ship will turn green.</li>
+          <li>Switch the orientation of the ship by clicking again on it.</li>
+          <li>To place the selected ship click on the cell where you want it to start.</li>
+          <li>Repeat the process until you place all your ships.</li>
+          <li>Tha battle will start as soon as both players have placed all their ships.</li>
+          <li>Good luck!</li>
+        </ol>
+      </div>
+    );
+  }
+
+  _renderError() {
+    const { error } = this.props;
+
+    if (!error) return false;
+
+    return (
+      <div className="error">{error}</div>
     );
   }
 
@@ -80,6 +123,7 @@ class GameShowView extends React.Component {
                 gameChannel={gameChannel}
                 selectedShip={selectedShip}
                 data={game.my_board}/>
+              {::this._renderError()}
             </div>
             {::this._renderOpponentBoard()}
           </section>

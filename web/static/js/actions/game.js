@@ -89,3 +89,10 @@ export function selectShip(ship) {
 export function resetGame() {
   return { type: Constants.GAME_RESET };
 }
+
+export  function setError(error) {
+  return {
+    type: Constants.GAME_ERROR,
+    error: error,
+  };
+}

@@ -29,33 +29,13 @@
     overflow-y: auto
     height: 100%
 
-
-    #opponents_board_container
-      flex: 1
-      overflow-y: auto
-      flex-direction: column
-
-      header
-        text-align: center
-
-    #my_board_container
-      flex: 1
-      overflow-y: auto
-      flex-direction: column
-      max-width: 50%
-
-      header
-        text-align: center
-
-
     .grid
       display: flex
       flex-direction: column
       margin-bottom: $base-spacing
 
-
       &.pointer
-        .cell:not(.header)
+        .cell:not(.header):hover
           cursor: pointer
 
       .row
@@ -99,7 +79,6 @@
 
           &.header
             border: 0px none
-            font-family: $heading-font-family
 
         &:nth-child(2)
           > .cell
@@ -109,18 +88,45 @@
           > .cell:not(.header)
             border-bottom-width: 3px
 
+    #opponents_board_container
+      flex: 1
+      flex-direction: column
+      padding-left: $small-spacing
+
+      header
+        text-align: center
+
+      .grid.pointer
+        .cell
+          cursor: crosshair
+
+    #my_board_container
+      flex: 1
+      flex-direction: column
+      max-width: 50%
+      padding-right: $small-spacing
+
+      .grid.pointer
+        .cell:not(.header):hover
+          background: $light-green
+
+      header
+        text-align: center
+
+
     #ship_selector
       padding: $small-spacing
       text-align: center
       background: rgba(#fff, .5)
       margin-bottom: $base-spacing
       border-radius: $base-border-radius
-
+      color: shade($dark-gray,25)
 
       .orientation
         text-transform: uppercase
         font-weight: bold
         border-bottom: 1px dotted $dark-gray
+        color: $base-font-color
 
       ul
         list-style: none
@@ -215,3 +221,28 @@
 
       textarea
         width: 100%
+
+  .instructions
+    background: rgba(#fff, .5)
+    border-radius: $base-border-radius
+    padding: $small-spacing * 1.5
+    color: shade($dark-gray,25)
+
+    li
+      margin-left: $small-spacing
+      margin-bottom: $small-spacing
+
+    input
+      cursor: pointer
+      background: transparent
+      padding: 0
+      display: inline-block
+      color: blue
+      width: 18em
+
+  .error
+    transition()
+    background: rgba($red, .3)
+    padding: $small-spacing
+    border-radius: $base-border-radius
+    text-align: center
