@@ -146,8 +146,6 @@ class GameShowView extends React.Component {
   }
 
   _renderResult() {
-    const { winnerId } = this.props;
-
     return (
       <div id="game_result" className="view-container">
         <header>

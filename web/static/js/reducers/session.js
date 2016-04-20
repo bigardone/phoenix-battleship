@@ -19,7 +19,7 @@ channel.join();
 const initialState = {
   playerId: playerId,
   socket: socket,
-  userChannel: channel,
+  playerChannel: channel,
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -29,7 +29,7 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         playerId: action.player_id,
         socket: action.socket,
-        userChannel: action.channel,
+        playerChannel: action.channel,
       };
 
     default:
