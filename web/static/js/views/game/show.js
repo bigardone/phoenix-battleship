@@ -79,7 +79,7 @@ class GameShowView extends React.Component {
         </header>
         <ol className="instructions">
           <li>Copy this link <input onClick={handleGameLinkClick} defaultValue={url} readOnly={true}/>
-            by clicking on it and share it with your opponent.                                                            </li>
+          &nbsp;by clicking on it and share it with your opponent.</li>
           <li>To place a ship in your board select one by clicking on the gray boxes.</li>
           <li>The selected ship will turn green.</li>
           <li>Switch the orientation of the ship by clicking again on it.</li>
