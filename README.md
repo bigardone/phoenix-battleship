@@ -1,19 +1,28 @@
-# Battleship
+# Phoenix Battleship
+The [Good Old game](https://en.wikipedia.org/wiki/Battleship_(game)) buiilt with [Elixir](https://github.com/elixir-lang/elixir), [Phoenix Framework](https://github.com/phoenixframework/phoenix), [Webpack](https://github.com/webpack/webpack), [React](https://github.com/facebook/react) and [Redux](https://github.com/rackt/redux).
 
-To start your Phoenix app:
+![`board`](http://codeloveandboards.com/images/projects/battleship-19a67645.jpg)
 
-  * Install dependencies with `mix deps.get`
-  * Install Node.js dependencies with `npm install`
-  * Start Phoenix endpoint with `mix phoenix.server`
+## Live demo
+https://phoenix-battleship.herokuapp.com
+
+## Requirements
+You need to have **Elixir v1.2** installed.
+
+## Installation instructions
+To start your Phoenix Trello app:
+
+  1. Install dependencies with `mix deps.get`
+  2. Install npm packages with `npm install`
+  3. Start Phoenix endpoint with `mix phoenix.server`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
+## Still in progress
+- [ ] Add game statistics.
+- [ ] Show list of awating games in home pate.
+- [ ] Create new game link on result view.
+- [ ] Add pirate characters and animations.
 
-## Learn more
-
-  * Official website: http://www.phoenixframework.org/
-  * Guides: http://phoenixframework.org/docs/overview
-  * Docs: http://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
+## License
+See [LICENSE](LICENSE).
