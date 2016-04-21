@@ -5,7 +5,7 @@ defmodule Battleship.Game.Board do
   alias Battleship.{Ship}
   require Logger
 
-  @ships_sizes [5, 4, 3, 2, 1]
+  @ships_sizes [5, 4, 3, 2, 2, 1, 1]
   @size 10
   @orientations [:horizontal, :vertical]
 
