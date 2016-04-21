@@ -5,21 +5,22 @@
   height: 100vh
   flex-direction: row
   flex-wrap: wrap
-  background: $light-gray
 
   #main_section
     flex: 3
     display: flex
     flex-direction: column
-    padding: $base-spacing
 
   #game_header
-    background: $light-gray
-    padding: $base-spacing
+    padding: $base-spacing * 1.5
     text-align: center
 
     h1
-      margin: 0
+      margin-bottom: .5em
+
+    p
+      color: $light-purple
+      font-size: 1.2em
 
   #boards_container
     flex: 3
@@ -28,11 +29,16 @@
     flex-wrap: wrap
     overflow-y: auto
     height: 100%
+    background: #fff
+    padding-top: $base-spacing
+    background: tint($light-gray, 70)
 
     .grid
       display: flex
       flex-direction: column
       margin-bottom: $base-spacing
+      border-radius: $base-border-radius
+      overflow: hidden
 
       &.pointer
         .cell:not(.header):hover
@@ -47,10 +53,12 @@
           flex: 1
           border-color: $dark-gray
           border-style: solid
-          border-width: 1px 1px 0 0
+          border-width: 1px
           display: flex
           align-items: center
           justify-content: center
+          border-radius: $base-border-radius
+          overflow: hidden;
 
           &:not(.header)
             background: $light-blue
@@ -91,10 +99,12 @@
     #opponents_board_container
       flex: 1
       flex-direction: column
-      padding-left: $small-spacing
+      padding: $small-spacing
 
       header
         text-align: center
+        h2
+          color: $dark-purple
 
       .grid.pointer
         .cell
@@ -104,7 +114,7 @@
       flex: 1
       flex-direction: column
       max-width: 50%
-      padding-right: $small-spacing
+      padding: $small-spacing
 
       .grid.pointer
         .cell:not(.header):hover
@@ -112,21 +122,23 @@
 
       header
         text-align: center
+        h2
+          color: $dark-purple
 
 
     #ship_selector
       padding: $small-spacing
       text-align: center
-      background: rgba(#fff, .5)
+      background: $light-gray
       margin-bottom: $base-spacing
       border-radius: $base-border-radius
-      color: shade($dark-gray,25)
+      color: $dark-gray
 
       .orientation
         text-transform: uppercase
         font-weight: bold
-        border-bottom: 1px dotted $dark-gray
-        color: $base-font-color
+        border-bottom: 1px dotted $purple
+        color: $purple
 
       ul
         list-style: none
@@ -140,26 +152,30 @@
           display: inline-block
 
           &:not(:last-of-type)
-            margin-right: $small-spacing * .6
+            margin-right: $small-spacing
 
           &.active
             .ship
               span
                 background-color: rgba($green, .5)
-
-                &:not(:last-of-type)
-                  border-right: 1px solid $green
+                border: 1px solid $green
 
 
           .ship
             > span
+              transition()
               display: inline-block
               width: 25px
               height: 25px
-              background: $dark-gray
+              background: tint($dark-gray, 20)
+              border-radius: $base-border-radius
+              border: 1px solid $dark-gray
+              overflow: hidden
 
-              &:not(:last-of-type)
-                border-right: 1px solid $gray
+          &:not(.active)
+            .ship:hover
+              > span
+                background: $dark-gray
 
 
 
@@ -184,7 +200,7 @@
         background: $green
 
     .messages-container
-      background: rgba(#fff, .5)
+      background: #fff
       flex: 1
       border-radius: $base-border-radius
       display: flex
@@ -223,10 +239,10 @@
         width: 100%
 
   .instructions
-    background: rgba(#fff, .5)
+    background: $light-gray
     border-radius: $base-border-radius
-    padding: $small-spacing * 1.5
-    color: shade($dark-gray,25)
+    padding: $base-spacing
+    color: $dark-gray
 
     li
       margin-left: $small-spacing
@@ -237,7 +253,7 @@
       background: transparent
       padding: 0
       display: inline-block
-      color: blue
+      color: $purple
       width: 18em
 
   .error
@@ -246,3 +262,20 @@
     padding: $small-spacing
     border-radius: $base-border-radius
     text-align: center
+
+
+#game_result
+  text-align: center
+  h1
+    font-size: 3em
+    line-height: 1.3em
+    color: $dark-purple
+
+  p
+    font-size: 1.5em
+    line-height: 1.5em
+    color: $light-purple
+    margin-bottom: 1.5em
+
+  .twitter-hashtag-button
+    @extend .button

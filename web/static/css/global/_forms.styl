@@ -9,10 +9,20 @@ input, textarea
   &:focus
     outline: none
 
-button
-  background: $green
+button, .button
+  transition()
+  background: tint($action-color, 20)
   color: #fff
   border: 0px none
-  padding: $small-spacing
+  padding: $small-spacing $base-spacing
   border-radius: $base-border-radius
-  border-bottom: 3px solid $dark-green
+  box-shadow: 0px 5px 0px 0px $action-color
+  text-transform: uppercase
+
+  &:hover
+    background: tint($action-color, 30)
+    outline: none
+
+  &:active
+    box-shadow: 0px 2px 0px 0px $action-green
+    outline: none
