@@ -138,19 +138,20 @@ class GameShowView extends React.Component {
     );
   }
 
-  _renderResultMessage() {
+  _renderResult() {
     const { playerId, winnerId } = this.props;
 
-    if (playerId === winnerId) return 'Victory is yours!';
-    else return 'You lose, get wrecked!';
-  }
+    const message = playerId === winnerId ?  'Yo Ho Ho, victory is yours!' : 'You got wrecked, landlubber!';
+    const twitterMessage = playerId === winnerId ?  'Yo Ho Ho, I won a battle at Phoenix Battleship' : 'I got wrecked at Phoenix Battleship';
 
-  _renderResult() {
     return (
       <div id="game_result" className="view-container">
         <header>
-          <h1>Game over!</h1>
-          <h2>{::this._renderResultMessage()}</h2>
+          <h1>Game over</h1>
+          <p>{message}</p>
+          <a
+            href={`https://twitter.com/intent/tweet?url=https://phoenix-battleship.herokuapp.com&button_hashtag=myelixirstatus&text=${twitterMessage}`}
+            className="twitter-hashtag-button"><i className="fa fa-twitter"/> Share result</a>
         </header>
       </div>
     );

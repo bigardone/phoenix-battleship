@@ -2,33 +2,25 @@ import React, { PropTypes } from 'react';
 import classnames           from 'classnames';
 import { selectShip }       from '../../actions/game';
 
-const shipConfigurations = [
-  { name: 'Aircraft carrier', size: 5 },
-  { name: 'Battleship', size: 4 },
-  { name: 'Cruiser', size: 3 },
-  { name: 'Destroyer', size: 2 },
-  { name: 'Submarine', size: 1 },
-];
-
 export default class ShipSelector extends React.Component {
   _renderAvailableShips() {
     const { dispatch, selectedShip, game } = this.props;
 
     const ships = game.my_board.ships.map((ship, i) => {
-      if (Object.keys(ship.coordinates).length != 0) return false;
+      ship.id = i;
 
-      const config = shipConfigurations.find((item) => item.size === ship.size);
+      if (Object.keys(ship.coordinates).length != 0) return false;
 
       const handleClick = (e) => {
         e.preventDefault();
 
         if (game.my_board.ready) return false;
 
-        dispatch(selectShip(config));
+        dispatch(selectShip(ship));
       };
 
       const classes = classnames({
-        active: config.name == selectedShip.name,
+        active: selectedShip.id == i,
       });
 
       return (
@@ -62,9 +54,7 @@ export default class ShipSelector extends React.Component {
 
     return (
       <div id="ship_selector">
-        <p>
-          The current orientation is: <br/>
-          <span className="orientation">{selectedShip.orientation}</span></p>
+        <p>The current orientation is: <span className="orientation">{selectedShip.orientation}</span></p>
         {::this._renderAvailableShips()}
       </div>
     );

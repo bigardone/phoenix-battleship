@@ -11,7 +11,7 @@ export default class MyBoard extends Board {
     const key = `${y}${x}`;
 
     return (e) => {
-      if (selectedShip.name === null) return false;
+      if (selectedShip.id === null) return false;
       if (value != Constants.GRID_VALUE_WATER) return false;
 
       const ship = {
@@ -33,7 +33,7 @@ export default class MyBoard extends Board {
     if (selectedShip.size === 0) return false;
 
     return (e) => {
-      console.log(x, y);
+
     };
   }
 
@@ -46,7 +46,7 @@ export default class MyBoard extends Board {
 
     return classnames({
       grid: true,
-      pointer: selectedShip && selectedShip.name != null,
+      pointer: selectedShip && selectedShip.id != null,
     });
   }
 

@@ -4,7 +4,7 @@ const initialState = {
   game: null,
   gameChannel: null,
   selectedShip: {
-    name: null,
+    id: null,
     size: 0,
     orientation: Constants.SHIP_ORIENTATION_HORIZONTAL,
   },
@@ -25,8 +25,6 @@ function currentTurn(game) {
 
   const lastTurn = game.rounds[0];
 
-  console.log(lastTurn);
-
   if (lastTurn == undefined) {
     return game.attacker;
   } else {
@@ -45,7 +43,7 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         game: game,
-        selectedShip: { ...state.selectedShip, name: null, size: 0 },
+        selectedShip: { ...state.selectedShip, id: null, size: 0, orientation: Constants.SHIP_ORIENTATION_HORIZONTAL },
         readyForBattle: readyForBattle(game),
         currentTurn: currentTurn(game),
         error: null,
@@ -71,7 +69,7 @@ export default function reducer(state = initialState, action = {}) {
     case Constants.GAME_SETUP_SELECT_SHIP:
       let orientation = state.selectedShip.orientation;
 
-      if (state.selectedShip.name == action.ship.name) {
+      if (state.selectedShip.id == action.ship.id) {
         let orientations = [Constants.SHIP_ORIENTATION_HORIZONTAL, Constants.SHIP_ORIENTATION_VERTICAL];
         const index = orientations.indexOf(state.selectedShip.orientation);
         orientations.splice(index, 1);
