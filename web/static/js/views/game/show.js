@@ -41,6 +41,8 @@ class GameShowView extends React.Component {
 
     if (!readyForBattle) return this._renderInstructions();
 
+    const opponentBoard = game.opponents_board;
+
     return (
       <div id="opponents_board_container">
         <header>
@@ -49,9 +51,10 @@ class GameShowView extends React.Component {
         <OpponentBoard
           dispatch={dispatch}
           gameChannel={gameChannel}
-          data={game.opponents_board}
+          data={opponentBoard}
           playerId={playerId}
           currentTurn={currentTurn}/>
+        <p>Remaining hit points: {opponentBoard.hit_points}</p>
       </div>
     );
   }
