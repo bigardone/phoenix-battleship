@@ -1,5 +1,5 @@
 # Phoenix Battleship
-The [Good Old game](https://en.wikipedia.org/wiki/Battleship_(game)) buiilt with [Elixir](https://github.com/elixir-lang/elixir), [Phoenix Framework](https://github.com/phoenixframework/phoenix), [React](https://github.com/facebook/react) and [Redux](https://github.com/rackt/redux).
+The [Good Old game](https://en.wikipedia.org/wiki/Battleship_(game)) built with [Elixir](https://github.com/elixir-lang/elixir), [Phoenix Framework](https://github.com/phoenixframework/phoenix), [React](https://github.com/facebook/react) and [Redux](https://github.com/rackt/redux).
 
 ![`board`](http://codeloveandboards.com/images/projects/battleship-19a67645.jpg)
 
