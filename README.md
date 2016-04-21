@@ -23,6 +23,7 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 - [ ] Show list of awating games in home pate.
 - [ ] Create new game link on result view.
 - [ ] Add pirate characters and animations.
+- [ ] Responsive design.
 
 ## License
 See [LICENSE](LICENSE).
