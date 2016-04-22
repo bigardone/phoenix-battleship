@@ -12,7 +12,7 @@ https://phoenix-battleship.herokuapp.com
 You need to have **Elixir v1.2** installed.
 
 ## Installation instructions
-To start your Phoenix Trello app:
+To start your Phoenix Battleship app:
 
   1. Install dependencies with `mix deps.get`
   2. Install npm packages with `npm install`
