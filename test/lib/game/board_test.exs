@@ -14,14 +14,18 @@ defmodule Battleship.Game.BoardTest do
       %Ship{x: 1, y: 0, size: 4, orientation: :vertical},
       %Ship{x: 2, y: 0, size: 3, orientation: :vertical},
       %Ship{x: 3, y: 0, size: 2, orientation: :vertical},
-      %Ship{x: 4, y: 0, size: 1, orientation: :vertical}
+      %Ship{x: 4, y: 0, size: 2, orientation: :vertical},
+      %Ship{x: 5, y: 0, size: 1, orientation: :vertical},
+      %Ship{x: 6, y: 0, size: 1, orientation: :vertical}
     ]
+
+    hit_points = Enum.reduce(valid_ships, 0, &(&1.size + &2))
 
     on_exit fn ->
       Board.destroy(@player_id)
     end
 
-    {:ok, board: board, valid_ships: valid_ships}
+    {:ok, board: board, valid_ships: valid_ships, hit_points: hit_points}
   end
 
   test "adding invalid ships" do
@@ -45,7 +49,7 @@ defmodule Battleship.Game.BoardTest do
     assert {:error, "Ship has invalid coordinates"} = Board.add_ship(@player_id, overlaping_ship)
   end
 
-  test "addding valid ships", %{valid_ships: valid_ships} do
+  test "adding valid ships", %{valid_ships: valid_ships} do
     valid_ships
     |> Enum.each(fn ship -> assert {:ok, %Board{}} = Board.add_ship(@player_id, ship) end)
 
@@ -61,10 +65,12 @@ defmodule Battleship.Game.BoardTest do
     assert {:ok, %Board{grid: %{"99" => "O"}}} = Board.take_shot(@player_id, x: 9, y: 9)
   end
 
-  test "taking a shot into a ship", %{valid_ships: valid_ships} do
+  test "taking a shot into a ship", %{valid_ships: valid_ships, hit_points: hit_points} do
     valid_ships
     |> Enum.each(&Board.add_ship(@player_id, &1))
 
-    assert {:ok, %Board{grid: %{"00" => "*"}, hit_points: 14}} = Board.take_shot(@player_id, x: 0, y: 0)
+    hit_points = hit_points - 1
+
+    assert {:ok, %Board{grid: %{"00" => "*"}, hit_points: ^hit_points}} = Board.take_shot(@player_id, x: 0, y: 0)
   end
 end
