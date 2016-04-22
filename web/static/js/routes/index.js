@@ -10,6 +10,7 @@ export default function configRoutes(store) {
     <Route component={MainLayout}>
       <Route path="/" component={HomeIndexView}/>
       <Route path="/game/:id" component={GameShowView}/>
+      <Route path="/not_found" component={NotFoundView} />
       <Route path="*" component={NotFoundView} />
     </Route>
   );

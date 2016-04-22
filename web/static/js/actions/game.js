@@ -15,8 +15,8 @@ export function joinGame(socket, playerId, gameId) {
       channel.push('game:joined');
     })
     .receive('error', (payload) => {
-      if (payload.reason === 'No more players allowed') dispatch(push('/'));
-      if (payload.reason === 'Game does not exist') dispatch(push('/'));
+      if (payload.reason === 'No more players allowed') dispatch(push('/not_found'));
+      if (payload.reason === 'Game does not exist') dispatch(push('/not_found'));
     });
 
     channel.on('game:message_sent', (payload) => {
