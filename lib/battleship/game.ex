@@ -34,7 +34,11 @@ defmodule Battleship.Game do
 
   # SERVER
 
-  def init(id), do: {:ok, %__MODULE__{id: id}}
+  def init(id) do
+    Battleship.Game.Event.game_created
+
+    {:ok, %__MODULE__{id: id}}
+  end
 
   def handle_call({:join, player_id, pid}, _from, game) do
     Logger.debug "Joinning Player to Game"
@@ -53,6 +57,8 @@ defmodule Battleship.Game do
         game = game
         |> add_player(player_id)
         |> add_channel(pid)
+
+        Battleship.Game.Event.player_joined
 
         {:reply, {:ok, self}, game}
     end
@@ -123,6 +129,8 @@ defmodule Battleship.Game do
 
   defp stop(game) do
     for player <- [game.attacker, game.defender], do: destroy_board(player)
+
+    Battleship.Game.Event.game_over
 
     {:stop, :normal, game}
   end
