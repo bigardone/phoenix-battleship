@@ -4,6 +4,7 @@ export default {
 
   //  Home
   HOME_NEW_GAME: 'HOME_NEW_GAME',
+  HOME_SET_CURRENT_GAMES: 'HOME_SET_CURRENT_GAMES',
 
   // Game
   GAME_SET_CHANNEL: 'GAME_SET_CHANNEL',
