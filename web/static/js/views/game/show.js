@@ -74,45 +74,6 @@ class GameShowView extends React.Component {
     );
   }
 
-  _renderGame() {
-    const { dispatch, game, gameChannel, selectedShip, playerId, currentTurn, messages } = this.props;
-
-    return (
-      <div id="game_show" className="view-container">
-        <section id="main_section">
-          <Header
-            game={game}
-            playerId={playerId}
-            currentTurn={currentTurn} />
-          <section id="boards_container">
-            <div id="my_board_container">
-              <header>
-                <h2>Your ships</h2>
-              </header>
-              <ShipSelector
-                dispatch={dispatch}
-                game={game}
-                selectedShip={selectedShip} />
-              <MyBoard
-                dispatch={dispatch}
-                gameChannel={gameChannel}
-                selectedShip={selectedShip}
-                data={game.my_board}/>
-              {::this._renderError()}
-            </div>
-            {::this._renderOpponentBoard()}
-          </section>
-        </section>
-        <Chat
-          dispatch={dispatch}
-          opponentIsConnected={::this._opponentIsConnected()}
-          gameChannel={gameChannel}
-          messages={messages}
-          playerId={playerId}/>
-      </div>
-    );
-  }
-
   _renderResult() {
     const { playerId, winnerId } = this.props;
 
@@ -120,7 +81,7 @@ class GameShowView extends React.Component {
     const twitterMessage = playerId === winnerId ?  'Yo Ho Ho, I won a battle at Phoenix Battleship' : 'I got wrecked at Phoenix Battleship';
 
     return (
-      <div id="game_result" className="view-container">
+      <div id="game_result">
         <header>
           <h1>Game over</h1>
           <p>{message}</p>
@@ -132,12 +93,55 @@ class GameShowView extends React.Component {
     );
   }
 
+  _renderGameContent() {
+    const { dispatch, game, gameOver, gameChannel, selectedShip, playerId, currentTurn, messages } = this.props;
+
+    if (gameOver) return this._renderResult();
+
+    return (
+      <section id="main_section">
+        <Header
+          game={game}
+          playerId={playerId}
+          currentTurn={currentTurn} />
+        <section id="boards_container">
+          <div id="my_board_container">
+            <header>
+              <h2>Your ships</h2>
+            </header>
+            <ShipSelector
+              dispatch={dispatch}
+              game={game}
+              selectedShip={selectedShip} />
+            <MyBoard
+              dispatch={dispatch}
+              gameChannel={gameChannel}
+              selectedShip={selectedShip}
+              data={game.my_board}/>
+            {::this._renderError()}
+          </div>
+          {::this._renderOpponentBoard()}
+        </section>
+      </section>
+    );
+  }
+
   render() {
-    const { game, gameOver } = this.props;
+    const { dispatch, game, gameChannel, selectedShip, playerId, currentTurn, messages } = this.props;
 
     if (!game) return false;
-    else if (!gameOver) return this._renderGame();
-    else return this._renderResult();
+
+    return (
+      <div id="game_show" className="view-container">
+        {::this._renderGameContent()}
+        <Chat
+          dispatch={dispatch}
+          opponentIsConnected={::this._opponentIsConnected()}
+          gameChannel={gameChannel}
+          messages={messages}
+          playerId={playerId}/>
+      </div>
+    );
   }
 }
 
