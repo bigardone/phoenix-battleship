@@ -22,7 +22,7 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 ## Still in progress
 - [ ] Add game statistics.
-- [ ] Show list of awating games in home page.
+- [x] Show list of awating games in home page.
 - [ ] Add link to start a new game in the result view.
 - [ ] Add pirate characters and animations.
 - [ ] Responsive design.
