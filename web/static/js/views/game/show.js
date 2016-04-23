@@ -10,6 +10,7 @@ import OpponentBoard          from '../../components/game/opponent_board';
 import Chat                   from '../../components/game/chat';
 import Header                 from '../../components/game/header';
 import Instructions           from '../../components/game/instructions';
+import Logo                   from '../../components/common/logo';
 
 class GameShowView extends React.Component {
   componentDidMount() {
@@ -83,6 +84,7 @@ class GameShowView extends React.Component {
     return (
       <div id="game_result">
         <header>
+          <Logo/>
           <h1>Game over</h1>
           <p>{message}</p>
           <a

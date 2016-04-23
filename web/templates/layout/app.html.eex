@@ -10,6 +10,7 @@
     <title>Ahoy Matey, welcome to Phoenix Battleship!</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <link id="favicon" rel="icon" type="image/png" sizes="64x64" href="<%= static_path(@conn, "/favicon.png") %>"/>
   </head>
 
   <body>

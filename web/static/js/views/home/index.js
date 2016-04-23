@@ -4,6 +4,7 @@ import ReactCSSTransitionGroup  from 'react-addons-css-transition-group';
 import { fetchGames }           from '../../actions/home';
 import NewGameButton            from '../../components/game/new_game_button';
 import ListItem                 from '../../components/game/list_item';
+import Logo                     from '../../components/common/logo';
 
 class HomeIndexView extends React.Component {
   componentDidMount() {
@@ -46,6 +47,7 @@ class HomeIndexView extends React.Component {
     return (
       <div id="home_index" className="view-container">
         <header>
+          <Logo/>
           <h1>Ahoy Matey, <br/>welcome to Phoenix Battleship!</h1>
           <p>The <a target="_blank" href="https://en.wikipedia.org/wiki/Battleship_(game)">Good Old game</a>, built with <a target="_blank" href="http://elixir-lang.org/">Elixir</a>, <a target="_blank" href="http://www.phoenixframework.org/">Phoenix</a>, <a target="_blank" href="http://facebook.github.io/react/">React</a> and <a target="_blank" href="http://redux.js.org/">Redux</a></p>
           <NewGameButton lobbyChannel={lobbyChannel} dispatch={dispatch}>Start new battle, arr!</NewGameButton>
