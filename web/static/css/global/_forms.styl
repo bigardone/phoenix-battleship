@@ -22,7 +22,15 @@ button, .button
   &:hover
     background: tint($action-color, 30)
     outline: none
+    color: #fff
 
   &:active
     box-shadow: 0px 2px 0px 0px $action-green
     outline: none
+    color: #fff
+
+  &.small
+    font-size: .9em
+    text-transform: lowercase
+    box-shadow: 0px 3px 0px 0px $action-color
+    padding: ($small-spacing / 2) $base-spacing
