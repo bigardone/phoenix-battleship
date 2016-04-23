@@ -20,7 +20,7 @@ defmodule Battleship.Game do
   # API
 
   def start_link(id) do
-    GenServer.start_link(__MODULE__, [id], name: ref(id))
+    GenServer.start_link(__MODULE__, id, name: ref(id))
   end
 
   def join(id, player_id, pid), do: try_call(id, {:join, player_id, pid})

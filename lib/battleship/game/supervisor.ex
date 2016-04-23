@@ -19,4 +19,19 @@ defmodule Battleship.Game.Supervisor do
   Creates a new supervised Game process
   """
   def create_game(id), do: Supervisor.start_child(__MODULE__, [id])
+
+  @doc """
+  Returns a list of the current games
+  """
+  def current_games do
+    __MODULE__
+    |> Supervisor.which_children
+    |> Enum.map(&game_data/1)
+  end
+
+  defp game_data({_id, pid, _type, _modules}) do
+    pid
+    |> GenServer.call(:get_data)
+    |> Map.take([:id, :attacker, :defender])
+  end
 end
