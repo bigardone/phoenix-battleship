@@ -13,7 +13,8 @@ defmodule Battleship do
       supervisor(Battleship.Endpoint, []),
       # Here you could define other workers and supervisors as children
       # worker(Battleship.Worker, [arg1, arg2, arg3]),
-      supervisor(Battleship.Game.Supervisor, [])
+      supervisor(Battleship.Game.Supervisor, []),
+      worker(Battleship.Game.Event, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
