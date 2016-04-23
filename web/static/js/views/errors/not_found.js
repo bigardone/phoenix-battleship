@@ -4,12 +4,12 @@ import NewGameButton        from '../../components/game/new_game_button';
 
 class NotFoundView extends React.Component {
   render() {
-    const { playerChannel, dispatch } = this.props;
+    const { lobbyChannel, dispatch } = this.props;
 
     return (
       <div id="not_found" className="view-container">
         <h1>Yo Ho Ho, game not found!</h1>
-        <NewGameButton playerChannel={playerChannel} dispatch={dispatch}>Start new battle, arr!</NewGameButton>
+        <NewGameButton lobbyChannel={lobbyChannel} dispatch={dispatch}>Start new battle, arr!</NewGameButton>
       </div>
     );
   }
