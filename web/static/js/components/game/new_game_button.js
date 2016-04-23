@@ -3,9 +3,9 @@ import { newGame }        from '../../actions/home';
 
 export default class NewGameButton extends React.Component {
   _handleClick(e) {
-    const { playerChannel, dispatch } = this.props;
+    const { lobbyChannel, dispatch } = this.props;
 
-    dispatch(newGame(playerChannel));
+    dispatch(newGame(lobbyChannel));
   }
 
   render() {

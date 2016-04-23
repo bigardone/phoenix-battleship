@@ -12,14 +12,14 @@ const socket = new Socket('/socket', {
 
 socket.connect();
 
-const channel = socket.channel(`player:${playerId}`);
+const lobbyChannel = socket.channel('lobby');
 
-channel.join();
+lobbyChannel.join();
 
 const initialState = {
   playerId: playerId,
   socket: socket,
-  playerChannel: channel,
+  lobbyChannel: lobbyChannel,
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -29,7 +29,7 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         playerId: action.player_id,
         socket: action.socket,
-        playerChannel: action.channel,
+        lobbyChannel: action.channel,
       };
 
     default:
