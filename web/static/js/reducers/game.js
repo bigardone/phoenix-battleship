@@ -23,7 +23,7 @@ function readyForBattle(game) {
 function currentTurn(game) {
   if (!readyForBattle(game)) return null;
 
-  const lastTurn = game.rounds[0];
+  const lastTurn = game.turns[0];
 
   if (lastTurn == undefined) {
     return game.attacker;

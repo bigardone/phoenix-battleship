@@ -32,6 +32,6 @@ defmodule Battleship.Game.Supervisor do
   defp game_data({_id, pid, _type, _modules}) do
     pid
     |> GenServer.call(:get_data)
-    |> Map.take([:id, :attacker, :defender])
+    |> Map.take([:id, :attacker, :defender, :turns, :over, :winner])
   end
 end

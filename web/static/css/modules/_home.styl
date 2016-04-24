@@ -24,7 +24,7 @@
     padding: 0
     overflow: hidden
 
-    li
+    > span > li
       padding: $small-spacing
       display: flex
       align-items: center
@@ -38,6 +38,15 @@
 
       &:not(:last-of-type)
         border-bottom: 1px solid $purple
+
+      ul
+        list-style: none
+
+        li
+          display: inline-block
+          margin-left: $base-spacing
+          color: $dark-gray
+          font-style: italic
 
     .item-appear
       opacity: 0.01
