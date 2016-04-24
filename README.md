@@ -1,7 +1,7 @@
 # Phoenix Battleship
 [![Build Status](https://travis-ci.org/bigardone/phoenix-battleship.svg?branch=master)](https://travis-ci.org/bigardone/phoenix-battleship)
 
-The [Good Old game](https://en.wikipedia.org/wiki/Battleship_(game)) built with [Elixir](https://github.com/elixir-lang/elixir), [Phoenix Framework](https://github.com/phoenixframework/phoenix), [React](https://github.com/facebook/react) and [Redux](https://github.com/rackt/redux).
+The [Good Old game](https://en.wikipedia.org/wiki/Battleship_(game)) built with [Elixir](https://github.com/elixir-lang/elixir), [Phoenix Framework](https://github.com/phoenixframework/phoenix), [React](https://github.com/facebook/react) and [Redux](https://github.com/reactjs/redux).
 
 ![`board`](http://codeloveandboards.com/images/projects/battleship-8722ab93.jpg)
 
@@ -12,7 +12,7 @@ https://phoenix-battleship.herokuapp.com
 You need to have **Elixir v1.2** installed.
 
 ## Installation instructions
-To start your Phoenix Trello app:
+To start your Phoenix Battleship app:
 
   1. Install dependencies with `mix deps.get`
   2. Install npm packages with `npm install`
