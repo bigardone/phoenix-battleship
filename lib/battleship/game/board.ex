@@ -5,7 +5,7 @@ defmodule Battleship.Game.Board do
   alias Battleship.{Ship}
   require Logger
 
-  @ships_sizes [5, 4, 3, 2, 2, 1, 1]
+  @ships_sizes [1, 1]
   @size 10
   @orientations [:horizontal, :vertical]
 
@@ -104,13 +104,17 @@ defmodule Battleship.Game.Board do
   def take_shot(player_id, x: x, y: y) do
     coords = Enum.join([y, x], "")
 
-    player_id
-    |> get_data
-    |> Map.get(:grid)
-    |> Map.get(coords)
-    |> shot_result
+    result = player_id
+      |> get_data
+      |> Map.get(:grid)
+      |> Map.get(coords)
+      |> shot_result
+
+    result
     |> add_result_to_board(player_id, coords)
     |> update_hit_points
+
+    {:ok, result}
   end
 
   defp ref(player_id), do: {:global, {:board, player_id}}

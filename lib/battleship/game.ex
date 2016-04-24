@@ -12,7 +12,7 @@ defmodule Battleship.Game do
     attacker: nil,
     defender: nil,
     channels: [],
-    rounds: [],
+    turns: [],
     over: false,
     winner: nil
   ]
@@ -84,11 +84,13 @@ defmodule Battleship.Game do
   def handle_call({:player_shot, player_id, x: x, y: y}, _from, game) do
     opponent_id = get_opponents_id(game, player_id)
 
-    Board.take_shot(opponent_id, x: x, y: y)
+    {:ok, result} = Board.take_shot(opponent_id, x: x, y: y)
 
     game = game
-    |> udpate_rounds(player_id, x: x, y: y)
+    |> udpate_turns(player_id, x: x, y: y, result: result)
     |> update_winner
+
+    Battleship.Game.Event.player_shot
 
     {:reply, {:ok, game}, game}
   end
@@ -135,8 +137,8 @@ defmodule Battleship.Game do
     {:stop, :normal, game}
   end
 
-  defp udpate_rounds(game, player_id, x: x, y: y) do
-    %{game | rounds: [%{player_id: player_id, x: x, y: y} | game.rounds]}
+  defp udpate_turns(game, player_id, x: x, y: y, result: result) do
+    %{game | turns: [%{player_id: player_id, x: x, y: y, result: result} | game.turns]}
   end
 
   defp update_winner(game) do

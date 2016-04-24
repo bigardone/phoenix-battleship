@@ -14,4 +14,5 @@ defmodule Battleship.Game.Event do
   def game_created, do: GenEvent.notify(__MODULE__, :game_created)
   def player_joined, do: GenEvent.notify(__MODULE__, :player_joined)
   def game_over, do: GenEvent.notify(__MODULE__, :game_over)
+  def player_shot, do: GenEvent.notify(__MODULE__, :player_shot)
 end
