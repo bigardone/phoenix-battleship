@@ -54,7 +54,8 @@ class HomeIndexView extends React.Component {
         </header>
         {::this._renderCurrentGames()}
         <footer>
-          <p><small>crafted with ♥ by <a target="_blank" href="http://codeloveandboards.com/">@bigardone</a></small></p>
+          <p>crafted with ♥ by <a target="_blank" href="http://codeloveandboards.com/">@bigardone</a></p>
+          <p><a target="_blank" href="https://github.com/bigardone/phoenix-battleship"><i className="fa fa-github"/> source code</a></p>
         </footer>
       </div>
     );
