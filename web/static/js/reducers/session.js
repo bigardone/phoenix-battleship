@@ -1,7 +1,7 @@
 import { Socket } from 'phoenix';
 import Constants  from '../constants';
 
-const playerId = localStorage.getItem('playerId');
+const playerId = window.playerId;
 
 const socket = new Socket('/socket', {
   params: {
