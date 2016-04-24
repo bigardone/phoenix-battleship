@@ -46,7 +46,7 @@ defmodule Battleship.GameTest do
     assert_receive {:DOWN, ^ref,  :process, ^pid, :normal}
   end
 
-  test "updates rounds after a shot", %{id: id, attacker_id: attacker_id, defender_id: defender_id} do
+  test "updates turns after a shot", %{id: id, attacker_id: attacker_id, defender_id: defender_id} do
     GameSupervisor.create_game(id)
 
     valid_ships = [
@@ -68,6 +68,6 @@ defmodule Battleship.GameTest do
 
     {:ok, game} = Game.player_shot(id, attacker_id, x: 0, y: 0)
 
-    assert [%{player_id: ^attacker_id, x: 0, y: 0}] = game.rounds
+    assert [%{player_id: ^attacker_id, x: 0, y: 0}] = game.turns
   end
 end
