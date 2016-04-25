@@ -104,11 +104,15 @@ defmodule Battleship.Game.Board do
   def take_shot(player_id, x: x, y: y) do
     coords = Enum.join([y, x], "")
 
+    Logger.debug "Player #{player_id} taking show at #{coords}"
+
     result = player_id
       |> get_data
       |> Map.get(:grid)
       |> Map.get(coords)
       |> shot_result
+
+    Logger.debug "Shot result: #{result}"
 
     result
     |> add_result_to_board(player_id, coords)
@@ -171,6 +175,7 @@ defmodule Battleship.Game.Board do
   end
 
   defp shot_result(current_value) when current_value == @grid_value_ship, do: @grid_value_ship_hit
+  defp shot_result(current_value) when current_value == @grid_value_ship_hit, do: @grid_value_ship_hit
   defp shot_result(_current_value), do: @grid_value_water_hit
 
   defp add_result_to_board(result, player_id, coords) do
