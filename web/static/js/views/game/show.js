@@ -1,4 +1,5 @@
 import React, { PropTypes }   from 'react';
+import { Link }               from 'react-router';
 import { Socket }             from 'phoenix';
 import { connect }            from 'react-redux';
 import { joinGame }           from '../../actions/game';
@@ -11,6 +12,7 @@ import Chat                   from '../../components/game/chat';
 import Header                 from '../../components/game/header';
 import Instructions           from '../../components/game/instructions';
 import Logo                   from '../../components/common/logo';
+import { setDocumentTitle }   from '../../utils';
 
 class GameShowView extends React.Component {
   componentDidMount() {
@@ -76,10 +78,12 @@ class GameShowView extends React.Component {
   }
 
   _renderResult() {
-    const { playerId, winnerId } = this.props;
+    const { game, playerId, winnerId } = this.props;
 
     const message = playerId === winnerId ?  'Yo Ho Ho, victory is yours!' : 'You got wrecked, landlubber!';
     const twitterMessage = playerId === winnerId ?  'Yo Ho Ho, I won a battle at Phoenix Battleship' : 'I got wrecked at Phoenix Battleship';
+
+    setDocumentTitle(`${message} · #${game.id}`);
 
     return (
       <div id="game_result">
@@ -91,6 +95,7 @@ class GameShowView extends React.Component {
             href={`https://twitter.com/intent/tweet?url=https://phoenix-battleship.herokuapp.com&button_hashtag=myelixirstatus&text=${twitterMessage}`}
             className="twitter-hashtag-button"><i className="fa fa-twitter"/> Share result</a>
         </header>
+        <Link to="/">Back to home</Link>
       </div>
     );
   }

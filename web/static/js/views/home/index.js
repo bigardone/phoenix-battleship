@@ -5,11 +5,13 @@ import { fetchGames }           from '../../actions/home';
 import NewGameButton            from '../../components/game/new_game_button';
 import ListItem                 from '../../components/game/list_item';
 import Logo                     from '../../components/common/logo';
+import { setDocumentTitle }     from '../../utils';
 
 class HomeIndexView extends React.Component {
   componentDidMount() {
     const { dispatch, lobbyChannel } = this.props;
 
+    setDocumentTitle('Ahoy, Matey!');
     dispatch(fetchGames(lobbyChannel));
   }
 
