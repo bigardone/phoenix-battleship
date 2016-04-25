@@ -10,7 +10,7 @@ export default class NewGameButton extends React.Component {
 
   render() {
     return (
-      <button onClick={::this._handleClick} type="submit" >{this.props.children}</button>
+      <button onClick={::this._handleClick}>{this.props.children}</button>
     );
   }
 }
