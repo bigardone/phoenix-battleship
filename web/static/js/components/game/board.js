@@ -24,10 +24,6 @@ export default class Board extends React.Component {
 
   _renderCell(y, x, value) {
     const key = `${y}${x}`;
-
-    const onClick = this._handleCellClick(y, x, value);
-    const onMouseOver = this._handleCellMouseOver(y, x);
-
     const id = this._cellId(key);
     const classes = this._cellClasses(value);
 
@@ -36,8 +32,9 @@ export default class Board extends React.Component {
         id={::this._cellId(key)}
         className={classes}
         key={key}
-        onClick={onClick}
-        onMouseOver={onMouseOver}>{::this._cellValue(value)}</div>
+        onClick={::this._handleCellClick(y, x, value)}
+        onDoubleClick={(e) => e.preventDefault()}
+        onMouseOver={::this._handleCellMouseOver(y, x)}>{::this._cellValue(value)}</div>
     );
   }
 
