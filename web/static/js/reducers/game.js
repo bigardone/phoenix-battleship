@@ -91,7 +91,7 @@ export default function reducer(state = initialState, action = {}) {
       };
 
     case Constants.GAME_OVER:
-      return { ...state, gameOver: true, winnerId: action.winnerId };
+      return state.gameOver ? { ...state } : { ...state, gameOver: true, winnerId: action.winnerId };
 
     case Constants.GAME_ERROR:
       return { ...state, error: action.error };
