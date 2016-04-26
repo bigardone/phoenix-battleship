@@ -60,6 +60,14 @@ export default function reducer(state = initialState, action = {}) {
 
       return { ...state, game: game };
 
+    case Constants.GAME_PLAYER_LEFT:
+      var game = { ...state.game };
+
+      if (game.attacker === action.playerId) game.attacker = null;
+      if (game.defender === action.playerId) game.defender = null;
+
+      return { ...state, game: game };
+
     case Constants.GAME_ADD_MESSAGE:
       let messages = [...state.messages];
       messages.push(action.message);
@@ -91,7 +99,7 @@ export default function reducer(state = initialState, action = {}) {
       };
 
     case Constants.GAME_OVER:
-      return state.gameOver ? { ...state } : { ...state, gameOver: true, winnerId: action.winnerId };
+      return state.gameOver ? { ...state, game: action.game } : { ...state, game: action.game, gameOver: true, winnerId: action.game.winner };
 
     case Constants.GAME_ERROR:
       return { ...state, error: action.error };

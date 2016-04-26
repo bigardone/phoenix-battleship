@@ -45,17 +45,17 @@ export function joinGame(socket, playerId, gameId) {
       dispatch(setGame(payload.game));
     });
 
-    channel.on(`game:opponent_left`, (payload) => {
-      dispatch({
-        type: Constants.GAME_OVER,
-        winnerId: playerId,
-      });
-    });
-
     channel.on(`game:over`, (payload) => {
       dispatch({
         type: Constants.GAME_OVER,
-        winnerId: payload.game.winner,
+        game: payload.game,
+      });
+    });
+
+    channel.on('game:player_left', (payload) => {
+      dispatch({
+        type: Constants.GAME_PLAYER_LEFT,
+        playerId: payload.player_id,
       });
     });
   };
