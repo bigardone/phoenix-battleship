@@ -102,7 +102,12 @@ defmodule Battleship.GameChannel do
   def terminate(reason, socket) do
     Logger.debug"Terminating GameChannel #{inspect reason}"
 
-    broadcast(socket, "game:opponent_left", %{game_id: socket.assigns.game_id})
+    player_id = socket.assigns.player_id
+    game_id = socket.assigns.game_id
+    game = Game.player_left(game_id, player_id)
+
+    broadcast(socket, "game:over", %{game: %{game | channels: nil}})
+    broadcast(socket, "game:player_left", %{player_id: player_id})
 
     :ok
   end
