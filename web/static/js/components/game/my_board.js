@@ -42,7 +42,7 @@ export default class MyBoard extends Board {
 
     const { size, orientation } = selectedShip;
 
-    const className = this._outOfBounds(y, x, orientation, size) ? 'ship-shape-invalid' : 'ship-shape';
+    const className = this._validCoords(y, x, orientation, size) ? 'ship-shape' : 'ship-shape-invalid';
 
     return (e) => {
       for (var i = 0; i < size; i++) {
@@ -80,11 +80,26 @@ export default class MyBoard extends Board {
     return ref;
   }
 
-  _outOfBounds(y, x, orientation, size) {
+  _validCoords(y, x, orientation, size) {
+    const { data } = this.props;
+    let inbounds;
+
     if (orientation === 'horizontal') {
-      return (x + size) > 10;
+      inbounds = (x + size) <= 10;
     } else {
-      return (y + size) > 10;
+      inbounds = (y + size) <= 10;
     }
+
+    let overlapping = false;
+
+    for (var i = 0; i < size; i++) {
+      const coords = orientation === 'horizontal' ? `${y}${x + i}` : `${y + i}${x}`;
+      if (data.grid[coords] != Constants.GRID_VALUE_WATER) {
+        overlapping = true;
+        break;
+      }
+    }
+
+    return inbounds && !overlapping;
   }
 }
