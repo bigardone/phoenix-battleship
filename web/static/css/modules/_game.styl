@@ -120,8 +120,10 @@
       padding: $small-spacing
 
       .grid.pointer
-        .cell:not(.header):hover
+        .cell.cell.ship-shape
           background: $light-green
+        .cell.ship-shape-invalid
+          background: $light-red
 
       header
         text-align: center

@@ -51,4 +51,8 @@ export default class OpponentBoard extends Board {
   _cellId(ref) {
     return false;
   }
+
+  _handleCellMouseOut(e) {
+    return false;
+  }
 }

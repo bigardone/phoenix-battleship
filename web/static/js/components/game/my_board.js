@@ -28,12 +28,29 @@ export default class MyBoard extends Board {
   }
 
   _handleCellMouseOver(y, x) {
+    return this._toggleCellClasses(y, x);
+  }
+
+  _handleCellMouseOut(y, x) {
+    return this._toggleCellClasses(y, x);
+  }
+
+  _toggleCellClasses(y, x) {
     const { selectedShip } = this.props;
 
     if (selectedShip.size === 0) return false;
 
-    return (e) => {
+    const { size, orientation } = selectedShip;
 
+    const className = this._outOfBounds(y, x, orientation, size) ? 'ship-shape-invalid' : 'ship-shape';
+
+    return (e) => {
+      for (var i = 0; i < size; i++) {
+        const coords = orientation === 'horizontal' ? `${y}${x + i}` : `${y + i}${x}`;
+        let cell = document.getElementById(coords);
+        if (!cell) break;
+        cell.classList.toggle(className);
+      }
     };
   }
 
@@ -61,5 +78,13 @@ export default class MyBoard extends Board {
 
   _cellId(ref) {
     return ref;
+  }
+
+  _outOfBounds(y, x, orientation, size) {
+    if (orientation === 'horizontal') {
+      return (x + size) > 10;
+    } else {
+      return (y + size) > 10;
+    }
   }
 }
