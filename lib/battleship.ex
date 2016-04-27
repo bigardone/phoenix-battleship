@@ -1,7 +1,8 @@
 defmodule Battleship do
   use Application
 
-  @id_length Application.get_env(:battleship, :id_length)
+  @id_words Application.get_env(:battleship, :id_words)
+  @id_number_max Application.get_env(:battleship, :id_number_max)
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -34,9 +35,6 @@ defmodule Battleship do
   Generates unique id for the game
   """
   def generate_id do
-    @id_length
-    |> :crypto.strong_rand_bytes
-    |> Base.url_encode64()
-    |> binary_part(0, @id_length)
+    Battleship.Pirate.generate_id(@id_words, @id_number_max)
   end
 end
