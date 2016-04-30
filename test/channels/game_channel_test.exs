@@ -4,10 +4,10 @@ defmodule Battleship.GameChannelTest do
   alias Battleship.Game.Supervisor, as: GameSupervisor
   alias Battleship.{PlayerSocket, GameChannel, Game}
 
-  @player_id Battleship.generate_id
+  @player_id Battleship.generate_player_id
 
   setup do
-    game_id = Battleship.generate_id
+    game_id = Battleship.generate_game_id
 
     {:ok, game} = GameSupervisor.create_game(game_id)
     {:ok, socket} = connect(PlayerSocket, %{"id" => @player_id})
