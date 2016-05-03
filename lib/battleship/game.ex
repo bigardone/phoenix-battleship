@@ -99,7 +99,7 @@ defmodule Battleship.Game do
   def handle_call({:player_left, player_id}, _from, game) do
     game = %{game | over: true, winner: get_opponents_id(game, player_id)}
 
-    {:reply, game, game}
+    {:reply, {:ok, game}, game}
   end
 
   def get_opponents_id(%Game{attacker: player_id, defender: nil}, player_id), do: nil

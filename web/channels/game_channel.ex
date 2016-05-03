@@ -104,10 +104,12 @@ defmodule Battleship.GameChannel do
 
     player_id = socket.assigns.player_id
     game_id = socket.assigns.game_id
-    game = Game.player_left(game_id, player_id)
-
-    broadcast(socket, "game:over", %{game: %{game | channels: nil}})
-    broadcast(socket, "game:player_left", %{player_id: player_id})
+    
+    case Game.player_left(game_id, player_id) do
+      {:ok, game} ->
+        broadcast(socket, "game:over", %{game: %{game | channels: nil}})
+        broadcast(socket, "game:player_left", %{player_id: player_id})
+    end
 
     :ok
   end
