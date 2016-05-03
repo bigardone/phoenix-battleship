@@ -15,7 +15,7 @@ defmodule Battleship.LobbyChannel do
   end
 
   def handle_in("new_game", _params, socket) do
-    game_id = Battleship.generate_id
+    game_id = Battleship.generate_game_id
     GameSupervisor.create_game(game_id)
 
     {:reply, {:ok, %{game_id: game_id}}, socket}

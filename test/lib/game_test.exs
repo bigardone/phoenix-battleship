@@ -6,9 +6,9 @@ defmodule Battleship.GameTest do
   alias Battleship.{Game, Ship}
 
   setup do
-    id =  Battleship.generate_id
-    attacker_id = Battleship.generate_id
-    defender_id = Battleship.generate_id
+    id =  Battleship.generate_game_id
+    attacker_id = Battleship.generate_player_id
+    defender_id = Battleship.generate_player_id
 
     {:ok, id: id, attacker_id: attacker_id, defender_id: defender_id}
   end

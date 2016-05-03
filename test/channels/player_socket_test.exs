@@ -3,7 +3,7 @@ defmodule Battleship.PlayerSocketTest do
 
   alias Battleship.{PlayerSocket}
 
-  @id Battleship.generate_id
+  @id Battleship.generate_player_id
 
   setup do
     {:ok, socket} = connect(PlayerSocket, %{"id" => @id})
