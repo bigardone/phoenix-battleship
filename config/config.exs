@@ -21,7 +21,9 @@ config :logger, :console,
 
 config :battleship,
   ga_tracking_code: "",
-  id_length: 8
+  id_length: 8,       # Number of bytes for generic unique id
+  id_words: 2,        # Number of words used in game ids "ahoy-matey"
+  id_number_max: 9999 # Maximal number >= 100 after the words "ahoey-matey-9999".
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
