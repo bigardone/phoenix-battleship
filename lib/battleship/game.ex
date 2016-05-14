@@ -25,13 +25,33 @@ defmodule Battleship.Game do
 
   def join(id, player_id, pid), do: try_call(id, {:join, player_id, pid})
 
+  @doc """
+  Returns the game's state
+  """
   def get_data(id), do: try_call(id, :get_data)
+
+  @doc """
+  Returns the game's state for a given player. This means it will
+  hide ships positions from the opponent's board.
+  """
   def get_data(id, player_id), do: try_call(id, {:get_data, player_id})
 
+  @doc """
+  Adds new chat message to the game's state
+  """
   def add_message(id, player_id, text), do: try_call(id, {:add_message, player_id, text})
 
+  @doc """
+  Fires a shot into the opponent's board for the given coordinates
+  """
   def player_shot(id, player_id, x: x, y: y), do: try_call(id, {:player_shot, player_id, x: x, y: y})
+
+  @doc """
+  Called when a player leaves the game
+  """
   def player_left(id, player_id), do: try_call(id, {:player_left, player_id})
+
+  def stop_game(id), do: try_call(id, :stop)
 
   # SERVER
 
@@ -51,9 +71,10 @@ defmodule Battleship.Game do
         {:reply, {:ok, self}, game}
       true ->
         Process.monitor(pid)
-        Process.flag(:trap_exit, true)
+        # Process.flag(:trap_exit, true)
 
-        create_board(player_id)
+        {:ok, board_pid} = create_board(player_id)
+        Process.monitor(board_pid)
 
         game = game
         |> add_player(player_id)
@@ -102,6 +123,10 @@ defmodule Battleship.Game do
     {:reply, {:ok, game}, game}
   end
 
+  def handle_call(:stop, _from, game) do
+    stop(game)
+  end
+
   def get_opponents_id(%Game{attacker: player_id, defender: nil}, player_id), do: nil
   def get_opponents_id(%Game{attacker: player_id, defender: defender}, player_id), do: defender
   def get_opponents_id(%Game{attacker: attacker, defender: player_id}, player_id), do: attacker
@@ -109,23 +134,26 @@ defmodule Battleship.Game do
   @doc """
   Handles exit messages from linked game channels processes, destroying boards and
   sopping the game process.
-  - {:DOWN, _ref, :process, _pid, _reason}
-  - {:EXIT, _pid, {:shutdown, :closed}}
-  """
-  def handle_info(message, game) do
-    Logger.debug "Handling message #{inspect message} in Game server"
 
+    - {:DOWN, _ref, :process, _pid, _reason}
+    - {:EXIT, _pid, {:shutdown, :closed}}
+  """
+  def handle_info({:DOWN, _ref, :process, _pid, _reason}, game) do
+    Logger.debug "Handling :DOWM in Game server"
+
+    Battleship.Game.Event.game_stopped(game.id)
     stop(game)
   end
+  # def handle_info({:EXIT, _pid, {:shutdown, :closed}}, game) do
+  #   Logger.debug "Handling :EXIT message in Game server"
+  #
+  #   stop(game)
+  # end
 
-  @doc """
-  Creates a new Board for a given Player
-  """
+  # Creates a new Board for a given Player
   defp create_board(player_id), do: Board.create(player_id)
 
-  @doc """
-  Generates global reference
-  """
+  # Generates global reference
   defp ref(id), do: {:global, {:game, id}}
 
   defp add_player(%__MODULE__{attacker: nil} = game, player_id), do: %{game | attacker: player_id}
@@ -133,16 +161,18 @@ defmodule Battleship.Game do
 
   defp add_channel(game, pid), do: %{game | channels: [pid | game.channels]}
 
-  defp destroy_board(nil), do: :ok
-  defp destroy_board(player_id), do: Board.destroy(player_id)
-
   defp stop(game) do
+    Logger.debug "Stopping Game #{game.id}"
+
     for player <- [game.attacker, game.defender], do: destroy_board(player)
 
     Battleship.Game.Event.game_over
 
     {:stop, :normal, game}
   end
+
+  defp destroy_board(nil), do: :ok
+  defp destroy_board(player_id), do: Board.destroy(player_id)
 
   defp udpate_turns(game, player_id, x: x, y: y, result: result) do
     %{game | turns: [%{player_id: player_id, x: x, y: y, result: result} | game.turns]}

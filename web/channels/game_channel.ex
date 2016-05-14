@@ -13,8 +13,8 @@ defmodule Battleship.GameChannel do
     player_id = socket.assigns.player_id
 
     case Game.join(game_id, player_id, socket.channel_pid) do
-      {:ok, pid} ->
-        Process.link(pid)
+      {:ok, _pid} ->
+        Process.flag(:trap_exit, true)
 
         {:ok, assign(socket, :game_id, game_id)}
       {:error, reason} ->
@@ -107,13 +107,23 @@ defmodule Battleship.GameChannel do
 
     case Game.player_left(game_id, player_id) do
       {:ok, game} ->
+
         broadcast(socket, "game:over", %{game: %{game | channels: nil}})
         broadcast(socket, "game:player_left", %{player_id: player_id})
 
-        :ok
+        Game.stop_game(game_id)
 
+        :ok
       _ ->
         :ok
     end
+  end
+
+  def handle_info(_message, socket) do
+    {:noreply, socket}
+  end
+
+  def broadcast_stop(game_id) do
+    Battleship.Endpoint.broadcast("game:#{game_id}", "game:stopped", %{})
   end
 end

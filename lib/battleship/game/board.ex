@@ -37,9 +37,14 @@ defmodule Battleship.Game.Board do
   Destroys an existing Player board
   """
   def destroy(player_id) do
-    Logger.debug "Stopping board for player #{player_id}"
-
-    Agent.stop(ref(player_id), :normal, :infinity)
+    case GenServer.whereis(ref(player_id)) do
+      nil ->
+        Logger.debug "Attempt to destroy unesxisting Board for player #{player_id}"
+      pid ->
+        Logger.debug "Stopping board for player #{player_id}"
+        
+        Agent.stop(pid, :normal, :infinity)
+    end
   end
 
   @doc """
@@ -121,6 +126,7 @@ defmodule Battleship.Game.Board do
     {:ok, result}
   end
 
+  # Generates global reference name for the board process
   defp ref(player_id), do: {:global, {:board, player_id}}
 
   # Checks if a similar ship has been already placed
@@ -167,6 +173,7 @@ defmodule Battleship.Game.Board do
     |> Enum.reduce(%{}, fn item, acc -> Map.put(acc, item, @grid_value_water) end)
   end
 
+  # Builds cells for a given row
   defp build_rows(y, rows) do
     row = 0..@size - 1
       |> Enum.reduce(rows, fn x, col -> [Enum.join([y, x], "") | col] end)
@@ -174,6 +181,7 @@ defmodule Battleship.Game.Board do
     [row | rows]
   end
 
+  # Returns shot result depending on the cell's current value
   defp shot_result(current_value) when current_value == @grid_value_ship, do: @grid_value_ship_hit
   defp shot_result(current_value) when current_value == @grid_value_ship_hit, do: @grid_value_ship_hit
   defp shot_result(_current_value), do: @grid_value_water_hit

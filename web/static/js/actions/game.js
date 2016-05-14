@@ -58,6 +58,11 @@ export function joinGame(socket, playerId, gameId) {
         playerId: payload.player_id,
       });
     });
+
+    channel.on(`game:stopped`, (payload) => {
+      dispatch(resetGame());
+      dispatch(push('/game_error'));
+    });
   };
 }
 

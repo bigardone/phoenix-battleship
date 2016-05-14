@@ -105,6 +105,9 @@ export default function reducer(state = initialState, action = {}) {
       return { ...state, error: action.error };
 
     case Constants.GAME_RESET:
+      let { gameChannel } = state;
+      if (gameChannel != null) gameChannel.leave();
+
       return { ...initialState };
 
     default:
