@@ -5,16 +5,17 @@ defmodule Battleship.GameChannel do
   use Phoenix.Channel
   alias Battleship.{Game, Ship}
   alias Battleship.Game.Board
+  alias Battleship.Game.Supervisor, as: GameSupervisor
   require Logger
 
   def join("game:" <> game_id, _message, socket) do
-    Logger.debug "Joining Game channel", game_id: game_id
+    Logger.debug "Joining Game channel #{game_id}", game_id: game_id
 
     player_id = socket.assigns.player_id
 
     case Game.join(game_id, player_id, socket.channel_pid) do
-      {:ok, _pid} ->
-        Process.flag(:trap_exit, true)
+      {:ok, pid} ->
+        Process.monitor(pid)
 
         {:ok, assign(socket, :game_id, game_id)}
       {:error, reason} ->
@@ -23,7 +24,8 @@ defmodule Battleship.GameChannel do
   end
 
   def handle_in("game:joined", _message, socket) do
-    Logger.debug "Broadcasting player joined"
+    Logger.debug "Broadcasting player joined #{socket.assigns.game_id}"
+
     player_id = socket.assigns.player_id
     board = Board.get_opponents_data(player_id)
 
@@ -41,7 +43,7 @@ defmodule Battleship.GameChannel do
   end
 
   def handle_in("game:send_message", %{"text" => text}, socket) do
-    Logger.debug "Handling send_message on GameChannel"
+    Logger.debug "Handling send_message on GameChannel #{socket.assigns.game_id}"
 
     player_id = socket.assigns.player_id
     message = %{player_id: player_id, text: text}
@@ -52,7 +54,7 @@ defmodule Battleship.GameChannel do
   end
 
   def handle_in("game:place_ship", %{"ship" => ship}, socket) do
-    Logger.debug "Handling place_ship on GameChannel"
+    Logger.debug "Handling place_ship on GameChannel #{socket.assigns.game_id}"
 
     player_id = socket.assigns.player_id
     game_id = socket.assigns.game_id
@@ -78,7 +80,7 @@ defmodule Battleship.GameChannel do
   end
 
   def handle_in("game:shoot", %{"y" => y, "x" => x}, socket) do
-    Logger.debug "Handling shoot on GameChannel"
+    Logger.debug "Handling shoot on GameChannel #{socket.assigns.game_id}"
 
     player_id = socket.assigns.player_id
     game_id = socket.assigns.game_id
@@ -100,7 +102,7 @@ defmodule Battleship.GameChannel do
   end
 
   def terminate(reason, socket) do
-    Logger.debug"Terminating GameChannel #{inspect reason}"
+    Logger.debug"Terminating GameChannel  #{socket.assigns.game_id} #{inspect reason}"
 
     player_id = socket.assigns.player_id
     game_id = socket.assigns.game_id
@@ -108,10 +110,10 @@ defmodule Battleship.GameChannel do
     case Game.player_left(game_id, player_id) do
       {:ok, game} ->
 
+        GameSupervisor.stop_game(game_id)
+
         broadcast(socket, "game:over", %{game: %{game | channels: nil}})
         broadcast(socket, "game:player_left", %{player_id: player_id})
-
-        Game.stop_game(game_id)
 
         :ok
       _ ->
@@ -119,11 +121,11 @@ defmodule Battleship.GameChannel do
     end
   end
 
-  def handle_info(_message, socket) do
-    {:noreply, socket}
-  end
+  def handle_info(_, socket), do: {:noreply, socket}
 
   def broadcast_stop(game_id) do
+    Logger.debug "Broadcasting game:stopped from GameChannel #{game_id}"
+
     Battleship.Endpoint.broadcast("game:#{game_id}", "game:stopped", %{})
   end
 end

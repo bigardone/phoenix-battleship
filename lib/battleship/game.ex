@@ -6,6 +6,7 @@ defmodule Battleship.Game do
   require Logger
   alias Battleship.{Game}
   alias Battleship.Game.Board
+  alias Battleship.Game.Supervisor, as: GameSupervisor
 
   defstruct [
     id: nil,
@@ -51,8 +52,6 @@ defmodule Battleship.Game do
   """
   def player_left(id, player_id), do: try_call(id, {:player_left, player_id})
 
-  def stop_game(id), do: try_call(id, :stop)
-
   # SERVER
 
   def init(id) do
@@ -71,7 +70,7 @@ defmodule Battleship.Game do
         {:reply, {:ok, self}, game}
       true ->
         Process.monitor(pid)
-        # Process.flag(:trap_exit, true)
+        Process.flag(:trap_exit, true)
 
         {:ok, board_pid} = create_board(player_id)
         Process.monitor(board_pid)
@@ -123,10 +122,6 @@ defmodule Battleship.Game do
     {:reply, {:ok, game}, game}
   end
 
-  def handle_call(:stop, _from, game) do
-    stop(game)
-  end
-
   def get_opponents_id(%Game{attacker: player_id, defender: nil}, player_id), do: nil
   def get_opponents_id(%Game{attacker: player_id, defender: defender}, player_id), do: defender
   def get_opponents_id(%Game{attacker: attacker, defender: player_id}, player_id), do: attacker
@@ -138,17 +133,28 @@ defmodule Battleship.Game do
     - {:DOWN, _ref, :process, _pid, _reason}
     - {:EXIT, _pid, {:shutdown, :closed}}
   """
-  def handle_info({:DOWN, _ref, :process, _pid, _reason}, game) do
-    Logger.debug "Handling :DOWM in Game server"
+  def handle_info({:DOWN, ref, :process, _pid, reason}, game) do
+    Logger.debug "Handling :DOWM in Game server with reason #{reason}"
 
     Battleship.Game.Event.game_stopped(game.id)
-    stop(game)
+
+    {:stop, :normal, game}
   end
   # def handle_info({:EXIT, _pid, {:shutdown, :closed}}, game) do
   #   Logger.debug "Handling :EXIT message in Game server"
   #
   #   stop(game)
   # end
+
+  def terminate(_reason, game) do
+    Logger.debug "Terminating Game process #{game.id}"
+
+    for player <- [game.attacker, game.defender], do: destroy_board(player)
+
+    Battleship.Game.Event.game_over
+
+    :ok
+  end
 
   # Creates a new Board for a given Player
   defp create_board(player_id), do: Board.create(player_id)
@@ -160,16 +166,6 @@ defmodule Battleship.Game do
   defp add_player(%__MODULE__{defender: nil} = game, player_id), do: %{game | defender: player_id}
 
   defp add_channel(game, pid), do: %{game | channels: [pid | game.channels]}
-
-  defp stop(game) do
-    Logger.debug "Stopping Game #{game.id}"
-
-    for player <- [game.attacker, game.defender], do: destroy_board(player)
-
-    Battleship.Game.Event.game_over
-
-    {:stop, :normal, game}
-  end
 
   defp destroy_board(nil), do: :ok
   defp destroy_board(player_id), do: Board.destroy(player_id)
