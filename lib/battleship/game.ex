@@ -133,7 +133,7 @@ defmodule Battleship.Game do
     - {:DOWN, _ref, :process, _pid, _reason}
     - {:EXIT, _pid, {:shutdown, :closed}}
   """
-  def handle_info({:DOWN, ref, :process, _pid, reason}, game) do
+  def handle_info({:DOWN, _ref, :process, _pid, reason}, game) do
     Logger.debug "Handling :DOWM in Game server with reason #{reason}"
 
     Battleship.Game.Event.game_stopped(game.id)

@@ -33,17 +33,28 @@ defmodule Battleship.GameTest do
     assert %Board{player_id: ^defender_id} = Agent.get({:global, {:board, defender_id}}, &(&1))
   end
 
-  test "closes game when player goes down", %{attacker_id: attacker_id} do
+  test "terminates game when player goes down", %{attacker_id: attacker_id} do
     {:ok, pid} = GameSupervisor.create_game("new-game")
-
     ref = Process.monitor(pid)
 
     spawn fn ->
       Game.join("new-game", attacker_id, self)
     end
 
-    assert catch_exit(Agent.get({:global, {:board, 1}}, &(&1)))
+    assert catch_exit(Agent.get({:global, {:board, attacker_id}}, &(&1)))
     assert_receive {:DOWN, ^ref,  :process, ^pid, :normal}
+  end
+
+  test "terminates game when a board goes down", %{attacker_id: attacker_id} do
+    {:ok, pid} = GameSupervisor.create_game("new-game")
+    Process.monitor(pid)
+    Game.join("new-game", attacker_id, self)
+
+    {:global, {:board, attacker_id}}
+    |> GenServer.whereis
+    |> Process.exit(:kill)
+
+    assert_receive {:DOWN, _ref, :process, pid, :normal}
   end
 
   test "updates turns after a shot", %{id: id, attacker_id: attacker_id, defender_id: defender_id} do
@@ -54,7 +65,9 @@ defmodule Battleship.GameTest do
       %Ship{x: 1, y: 0, size: 4, orientation: :vertical},
       %Ship{x: 2, y: 0, size: 3, orientation: :vertical},
       %Ship{x: 3, y: 0, size: 2, orientation: :vertical},
-      %Ship{x: 4, y: 0, size: 1, orientation: :vertical}
+      %Ship{x: 4, y: 0, size: 2, orientation: :vertical},
+      %Ship{x: 5, y: 0, size: 1, orientation: :vertical},
+      %Ship{x: 6, y: 0, size: 1, orientation: :vertical}
     ]
 
     Game.join(id, attacker_id, self)

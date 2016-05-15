@@ -42,7 +42,7 @@ defmodule Battleship.Game.Board do
         Logger.debug "Attempt to destroy unesxisting Board for player #{player_id}"
       pid ->
         Logger.debug "Stopping board for player #{player_id}"
-        
+
         Agent.stop(pid, :normal, :infinity)
     end
   end
