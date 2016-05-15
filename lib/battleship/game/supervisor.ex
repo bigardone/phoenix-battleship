@@ -2,6 +2,8 @@ defmodule Battleship.Game.Supervisor do
   @moduledoc """
   Game processes supervisor
   """
+  require Logger
+
   use Supervisor
   alias Battleship.{Game}
 
@@ -27,6 +29,14 @@ defmodule Battleship.Game.Supervisor do
     __MODULE__
     |> Supervisor.which_children
     |> Enum.map(&game_data/1)
+  end
+
+  def stop_game(game_id) do
+    Logger.debug "Stopping game #{game_id} in supervisor"
+
+    pid = GenServer.whereis({:global, {:game, game_id}})
+
+    Supervisor.terminate_child(__MODULE__, pid)
   end
 
   defp game_data({_id, pid, _type, _modules}) do

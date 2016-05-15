@@ -5,9 +5,9 @@ import NewGameButton        from '../../components/game/new_game_button';
 import Logo                 from '../../components/common/logo';
 import { setDocumentTitle } from '../../utils';
 
-class NotFoundView extends React.Component {
+class GameErrorView extends React.Component {
   componentDidMount() {
-    setDocumentTitle('Yo Ho Ho, game not found!');
+    setDocumentTitle('Blow me down, game error!');
   }
 
   render() {
@@ -16,7 +16,7 @@ class NotFoundView extends React.Component {
     return (
       <div id="not_found" className="view-container">
         <Logo/>
-        <h1>Yo Ho Ho, game not found!</h1>
+        <h1>Blow me down, game error!</h1>
         <NewGameButton lobbyChannel={lobbyChannel} dispatch={dispatch}>Start new battle, arr!</NewGameButton>
         <p><Link to="/">Back to home</Link></p>
       </div>
@@ -28,4 +28,4 @@ const mapStateToProps = (state) => (
   { ...state.session, ...state.game }
 );
 
-export default connect(mapStateToProps)(NotFoundView);
+export default connect(mapStateToProps)(GameErrorView);
