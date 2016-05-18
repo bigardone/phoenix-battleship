@@ -90,7 +90,6 @@ defmodule Battleship.GameChannel do
 
     case Game.player_shot(game_id, player_id, x: x, y: y) do
       {:ok, %Game{over: true} = game} ->
-        game = Map.delete(game, :channels)
         broadcast(socket, "game:over", %{game: game})
         {:noreply, socket}
       {:ok, _game} ->
@@ -112,7 +111,7 @@ defmodule Battleship.GameChannel do
 
         GameSupervisor.stop_game(game_id)
 
-        broadcast(socket, "game:over", %{game: %{game | channels: nil}})
+        broadcast(socket, "game:over", %{game: game})
         broadcast(socket, "game:player_left", %{player_id: player_id})
 
         :ok

@@ -4,15 +4,12 @@ defmodule Battleship.Game do
   """
   use GenServer
   require Logger
-  alias Battleship.{Game}
   alias Battleship.Game.Board
-  alias Battleship.Game.Supervisor, as: GameSupervisor
 
   defstruct [
     id: nil,
     attacker: nil,
     defender: nil,
-    channels: [],
     turns: [],
     over: false,
     winner: nil
@@ -75,9 +72,7 @@ defmodule Battleship.Game do
         {:ok, board_pid} = create_board(player_id)
         Process.monitor(board_pid)
 
-        game = game
-        |> add_player(player_id)
-        |> add_channel(pid)
+        game = add_player(game, player_id)
 
         Battleship.Game.Event.player_joined
 
@@ -85,12 +80,11 @@ defmodule Battleship.Game do
     end
   end
 
-  def handle_call(:get_data, _from, game), do: {:reply, %{game | channels: nil}, game}
+  def handle_call(:get_data, _from, game), do: {:reply, game, game}
   def handle_call({:get_data, player_id}, _from, game) do
     Logger.debug "Getting Game data for player #{player_id}"
 
     game_data = game
-    |> Map.delete(:channels)
     |> Map.put(:my_board, Board.get_data(player_id))
 
     opponent_id = get_opponents_id(game, player_id)
@@ -122,9 +116,9 @@ defmodule Battleship.Game do
     {:reply, {:ok, game}, game}
   end
 
-  def get_opponents_id(%Game{attacker: player_id, defender: nil}, player_id), do: nil
-  def get_opponents_id(%Game{attacker: player_id, defender: defender}, player_id), do: defender
-  def get_opponents_id(%Game{attacker: attacker, defender: player_id}, player_id), do: attacker
+  def get_opponents_id(%__MODULE__{attacker: player_id, defender: nil}, player_id), do: nil
+  def get_opponents_id(%__MODULE__{attacker: player_id, defender: defender}, player_id), do: defender
+  def get_opponents_id(%__MODULE__{attacker: attacker, defender: player_id}, player_id), do: attacker
 
   @doc """
   Handles exit messages from linked game channels processes, destroying boards and
@@ -164,8 +158,6 @@ defmodule Battleship.Game do
 
   defp add_player(%__MODULE__{attacker: nil} = game, player_id), do: %{game | attacker: player_id}
   defp add_player(%__MODULE__{defender: nil} = game, player_id), do: %{game | defender: player_id}
-
-  defp add_channel(game, pid), do: %{game | channels: [pid | game.channels]}
 
   defp destroy_board(nil), do: :ok
   defp destroy_board(player_id), do: Board.destroy(player_id)
