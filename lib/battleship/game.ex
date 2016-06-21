@@ -58,7 +58,7 @@ defmodule Battleship.Game do
   end
 
   def handle_call({:join, player_id, pid}, _from, game) do
-    Logger.debug "Joinning Player to Game"
+    Logger.debug "Handling :join for #{player_id} in Game #{game.id}"
 
     cond do
       game.attacker != nil and game.defender != nil ->
@@ -66,8 +66,8 @@ defmodule Battleship.Game do
       Enum.member?([game.attacker, game.defender], player_id) ->
         {:reply, {:ok, self}, game}
       true ->
-        Process.monitor(pid)
         Process.flag(:trap_exit, true)
+        Process.monitor(pid)
 
         {:ok, board_pid} = create_board(player_id)
         Process.monitor(board_pid)
@@ -82,10 +82,9 @@ defmodule Battleship.Game do
 
   def handle_call(:get_data, _from, game), do: {:reply, game, game}
   def handle_call({:get_data, player_id}, _from, game) do
-    Logger.debug "Getting Game data for player #{player_id}"
+    Logger.debug "Handling :get_data for player #{player_id} in Game #{game.id}"
 
-    game_data = game
-    |> Map.put(:my_board, Board.get_data(player_id))
+    game_data = Map.put(game, :my_board, Board.get_data(player_id))
 
     opponent_id = get_opponents_id(game, player_id)
 
@@ -97,6 +96,8 @@ defmodule Battleship.Game do
   end
 
   def handle_call({:player_shot, player_id, x: x, y: y}, _from, game) do
+    Logger.debug "Handling :player_shot for #{player_id} in Game #{game.id}"
+
     opponent_id = get_opponents_id(game, player_id)
 
     {:ok, result} = Board.take_shot(opponent_id, x: x, y: y)
@@ -111,6 +112,8 @@ defmodule Battleship.Game do
   end
 
   def handle_call({:player_left, player_id}, _from, game) do
+    Logger.debug "Handling :player_left for #{player_id} in Game #{game.id}"
+
     game = %{game | over: true, winner: get_opponents_id(game, player_id)}
 
     {:reply, {:ok, game}, game}
@@ -121,19 +124,18 @@ defmodule Battleship.Game do
   def get_opponents_id(%__MODULE__{attacker: attacker, defender: player_id}, player_id), do: attacker
 
   @doc """
-  Handles exit messages from linked game channels processes, destroying boards and
-  sopping the game process.
-
-    - {:DOWN, _ref, :process, _pid, _reason}
-    - {:EXIT, _pid, {:shutdown, :closed}}
+  Handles exit messages from linked game channels and boards processes
+  stopping the game process.
   """
-  def handle_info({:DOWN, _ref, :process, _pid, reason}, game) do
-    Logger.debug "Handling :DOWM in Game server with reason #{reason}"
+  def handle_info({:DOWN, _ref, :process, _pid, _reason} = message, game) do
+    Logger.debug "Handling message in Game #{game.id}"
+    Logger.debug "#{inspect message}"
 
     Battleship.Game.Event.game_stopped(game.id)
 
     {:stop, :normal, game}
   end
+
   # def handle_info({:EXIT, _pid, {:shutdown, :closed}}, game) do
   #   Logger.debug "Handling :EXIT message in Game server"
   #

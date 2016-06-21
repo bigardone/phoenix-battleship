@@ -101,7 +101,7 @@ defmodule Battleship.GameChannel do
   end
 
   def terminate(reason, socket) do
-    Logger.debug"Terminating GameChannel  #{socket.assigns.game_id} #{inspect reason}"
+    Logger.debug"Terminating GameChannel #{socket.assigns.game_id} #{inspect reason}"
 
     player_id = socket.assigns.player_id
     game_id = socket.assigns.game_id
