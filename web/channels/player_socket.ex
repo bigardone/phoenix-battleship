@@ -4,8 +4,6 @@ defmodule Battleship.PlayerSocket do
   """
   use Phoenix.Socket
 
-  alias Battleship.Player
-
   ## Channels
   channel "lobby", Battleship.LobbyChannel
   channel "game:*", Battleship.GameChannel

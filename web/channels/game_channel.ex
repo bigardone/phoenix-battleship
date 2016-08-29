@@ -85,14 +85,12 @@ defmodule Battleship.GameChannel do
     player_id = socket.assigns.player_id
     game_id = socket.assigns.game_id
 
-    game = Game.get_data(game_id)
-    opponent_id = Game.get_opponents_id(game, player_id)
-
     case Game.player_shot(game_id, player_id, x: x, y: y) do
       {:ok, %Game{over: true} = game} ->
         broadcast(socket, "game:over", %{game: game})
         {:noreply, socket}
-      {:ok, _game} ->
+      {:ok, game} ->
+        opponent_id = Game.get_opponents_id(game, player_id)
         broadcast(socket, "game:player:#{opponent_id}:set_game", %{game: Game.get_data(game_id, opponent_id)})
         {:reply, {:ok, %{game: Game.get_data(game_id, player_id)}}, socket}
       _ ->

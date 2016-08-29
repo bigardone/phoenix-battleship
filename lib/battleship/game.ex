@@ -104,7 +104,7 @@ defmodule Battleship.Game do
 
     game = game
     |> udpate_turns(player_id, x: x, y: y, result: result)
-    |> update_winner
+    |> check_for_winner
 
     Battleship.Game.Event.player_shot
 
@@ -168,7 +168,7 @@ defmodule Battleship.Game do
     %{game | turns: [%{player_id: player_id, x: x, y: y, result: result} | game.turns]}
   end
 
-  defp update_winner(game) do
+  defp check_for_winner(game) do
     attacker_board = Board.get_data(game.attacker)
     defender_board = Board.get_data(game.defender)
 

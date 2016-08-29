@@ -50,11 +50,4 @@ defmodule Battleship do
   def generate_game_id do
     Battleship.Pirate.generate_id(@id_words, @id_number_max)
   end
-
-  @doc """
-  Generates unique name for a player
-  """
-  def generate_name do
-    Battleship.Pirate.generate_name(@name_number_max)
-  end
 end

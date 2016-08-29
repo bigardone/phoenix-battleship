@@ -68,9 +68,9 @@ defmodule Battleship.Game.Board do
         {:error, "Ship has invalid coordinates"}
       true ->
         new_board = board
-        |> add_ship_to_grid(ship)
-        |> set_is_ready
-        |> set_hit_points
+          |> add_ship_to_grid(ship)
+          |> set_hit_points
+          |> set_is_ready
 
         Agent.update(ref(player_id), fn(_) -> new_board end)
 
@@ -136,14 +136,14 @@ defmodule Battleship.Game.Board do
   end
 
   # Checks if the ship is inside the boards boundaries
-  defp ship_with_invalid_bounds?(%Ship{orientation: orientation} = ship) when orientation == :horizontal do
+  defp ship_with_invalid_bounds?(%Ship{orientation: :horizontal} = ship) do
     ship.x + ship.size > @size
   end
-  defp ship_with_invalid_bounds?(%Ship{orientation: orientation} = ship) when orientation == :vertical do
+  defp ship_with_invalid_bounds?(%Ship{orientation: :vertical} = ship) do
     ship.y + ship.size > @size
   end
 
-  # Checks is the ship is collapsing an exisiting one
+  # Checks is the ship is overlaps an exisiting one
   defp ship_with_invalid_coordinates?(board, ship) do
     ship
     |> Ship.coordinates
@@ -182,8 +182,8 @@ defmodule Battleship.Game.Board do
   end
 
   # Returns shot result depending on the cell's current value
-  defp shot_result(current_value) when current_value == @grid_value_ship, do: @grid_value_ship_hit
-  defp shot_result(current_value) when current_value == @grid_value_ship_hit, do: @grid_value_ship_hit
+  defp shot_result(@grid_value_ship), do: @grid_value_ship_hit
+  defp shot_result(@grid_value_ship_hit), do: @grid_value_ship_hit
   defp shot_result(_current_value), do: @grid_value_water_hit
 
   defp add_result_to_board(result, player_id, coords) do

@@ -54,7 +54,7 @@ defmodule Battleship.GameTest do
     |> GenServer.whereis
     |> Process.exit(:kill)
 
-    assert_receive {:DOWN, _ref, :process, pid, :normal}
+    assert_receive {:DOWN, _ref, :process, _pid, :normal}
   end
 
   test "updates turns after a shot", %{id: id, attacker_id: attacker_id, defender_id: defender_id} do

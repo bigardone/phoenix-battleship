@@ -313,5 +313,4 @@ defmodule Battleship.Pirate do
     [random_number] = Enum.take_random(100..number_max, 1)
     name <> " " <> to_string(random_number)
   end
-
 end
