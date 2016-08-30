@@ -7,6 +7,7 @@ use Mix.Config
 
 # Configures the endpoint
 config :battleship, Battleship.Endpoint,
+  namespace: Battleship,
   url: [host: "localhost"],
   root: Path.dirname(__DIR__),
   secret_key_base: "9vBUPPF+U6OIacuWP6B8OalXx+dXsWmE+GrSP0mO4WEVyUp1Q8QS/RNAOkrM3YTu",
