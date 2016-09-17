@@ -8,6 +8,9 @@ The [Good Old game](https://en.wikipedia.org/wiki/Battleship_(game)) built with 
 ## Live demo
 https://phoenix-battleship.herokuapp.com
 
+## Elm version
+https://github.com/bigardone/phoenix-elm-battleship
+
 ## Requirements
 You need to have **Elixir v1.2** installed.
 
