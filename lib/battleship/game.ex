@@ -88,9 +88,11 @@ defmodule Battleship.Game do
 
     opponent_id = get_opponents_id(game, player_id)
 
-    if opponent_id != nil do
-      game_data = Map.put(game_data, :opponents_board, Board.get_opponents_data(opponent_id))
-    end
+    game_data =
+      case opponent_id do
+        nil -> game_data
+        _   -> Map.put(game_data, :opponents_board, Board.get_opponents_data(opponent_id))
+      end
 
     {:reply, game_data, game}
   end
