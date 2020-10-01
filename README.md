@@ -1,4 +1,4 @@
-# Phoenix Battleship
+# Phoenix Battleship : An Addictive Game
 [![Build Status](https://travis-ci.org/bigardone/phoenix-battleship.svg?branch=master)](https://travis-ci.org/bigardone/phoenix-battleship)
 
 The [Good Old game](https://en.wikipedia.org/wiki/Battleship_(game)) built with [Elixir](https://github.com/elixir-lang/elixir), [Phoenix Framework](https://github.com/phoenixframework/phoenix), [React](https://github.com/facebook/react) and [Redux](https://github.com/reactjs/redux).
